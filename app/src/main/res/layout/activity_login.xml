@@ -55,6 +55,16 @@
         android:text="Forgot Password? Recover"
         android:textAlignment="center"
         android:textColor="@color/black" />
+
+    <!-- GG SifgnInBtn : Sign in with gg account   -->
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/googleLoginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/recoverPassTv"
+        android:paddingTop="10dp"
+        />
     <!--   Not Have account-->
     <TextView
         android:id="@+id/nothave_accountTv"
