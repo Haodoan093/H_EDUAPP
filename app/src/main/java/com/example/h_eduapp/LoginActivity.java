@@ -220,59 +220,63 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(String email, String password) {
+        // Hiển thị hộp thoại tiến trình
         progressDialog.setMessage("Loging In...");
         progressDialog.show();
+
+        // Đăng nhập vào Firebase Authentication
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    // Sign in success, dismiss dialog and start register activity
-                    progressDialog.dismiss();
-                    FirebaseUser user = mAuth.getCurrentUser();
+                    // Nếu đăng nhập thành công
+                    progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
+                    FirebaseUser user = mAuth.getCurrentUser(); // Lấy thông tin người dùng hiện tại
 
-                    //get user email and uid from auth
-                    String email= user.getEmail();
-                    String uid= user.getUid();
-                    //When user is registered store user info in firebase realtime database too
-                    //using hashMap
+                    // Kiểm tra nếu người dùng mới
+                    if(task.getResult().getAdditionalUserInfo().isNewUser()){
+                        // Lấy email và uid của người dùng từ Authentication
+                        String email= user.getEmail();
+                        String uid= user.getUid();
 
-                    HashMap<Object,String> hashMap= new HashMap<>();
-                    //put info in hasmap
-                    hashMap.put("email",email);
-                    hashMap.put("name","");
-                    hashMap.put("uid",uid);
-                    hashMap.put("phone","");
-                    hashMap.put("image","");
-                    //se add sau khi dang edit profile
-                    //Firebse dt instance
-                    FirebaseDatabase database= FirebaseDatabase.getInstance();
-                    //path to store user data named "Users"
-                    DatabaseReference reference= database.getReference("Users");
-                    //put data within hashmap in database
-                    reference.child(uid).setValue(hashMap);
+                        // Tạo một HashMap để lưu thông tin của người dùng
+                        HashMap<Object,String> hashMap= new HashMap<>();
+                        hashMap.put("email",email); // Đưa email vào HashMap
+                        hashMap.put("name",""); // Đưa tên vào HashMap (ở đây bạn có thể đưa thông tin tên nếu có)
+                        hashMap.put("uid",uid); // Đưa UID vào HashMap
+                        hashMap.put("phone",""); // Đưa số điện thoại vào HashMap (ở đây bạn có thể đưa thông tin số điện thoại nếu có)
+                        hashMap.put("image",""); // Đưa link hình ảnh vào HashMap (ở đây bạn có thể đưa thông tin ảnh đại diện nếu có)
+
+                        // Lấy tham chiếu đến Firebase Database
+                        FirebaseDatabase database= FirebaseDatabase.getInstance();
+                        DatabaseReference reference= database.getReference("Users"); // Tham chiếu đến "Users" trong database
+
+                        // Lưu dữ liệu của người dùng vào Firebase Realtime Database
+                        reference.child(uid).setValue(hashMap); // Lưu HashMap vào "Users" với key là UID của người dùng
+                    }
+
+                    // Hiển thị thông báo đăng nhập thành công
                     Toast.makeText(LoginActivity.this, "Registered...\n" + user.getEmail(), Toast.LENGTH_SHORT).show();
-                    // Khởi chạy ProfileActivity và kết thúc RegisterActivity
+
+                    // Khởi chạy DashboardActivity và kết thúc LoginActivity
                     startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                     finish();
-
                 } else {
-                    //If sign in fails, display a message to the user
-                    progressDialog.dismiss();
+                    // Nếu đăng nhập thất bại, hiển thị thông báo
+                    progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
                     Toast.makeText(LoginActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                //error, dismiss progess dialog and get and show the error message
-                progressDialog.dismiss();
+                // Nếu có lỗi, hiển thị thông báo lỗi
+                progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
                 Toast.makeText(LoginActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {
