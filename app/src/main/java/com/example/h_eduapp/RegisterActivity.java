@@ -130,6 +130,7 @@ public class RegisterActivity extends AppCompatActivity {
                     hashMap.put("uid",uid);
                     hashMap.put("phone","");
                     hashMap.put("image","");
+                    hashMap.put("cover","");
                     //se add sau khi dang edit profile
                     //Firebse dt instance
                     FirebaseDatabase database= FirebaseDatabase.getInstance();
