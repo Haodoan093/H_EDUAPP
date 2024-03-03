@@ -37,6 +37,8 @@
         android:layout_centerInParent="true"
         android:hint="Password"
         android:minHeight="48dp"
+        android:inputType="textPassword"
+
         app:passwordToggleEnabled="true" />
 
     <Button
