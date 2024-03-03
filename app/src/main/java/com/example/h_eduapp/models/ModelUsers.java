@@ -1,4 +1,4 @@
-package com.example.h_eduapp;
+package com.example.h_eduapp.models;
 
 public class ModelUsers {
 
