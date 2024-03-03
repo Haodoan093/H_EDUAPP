@@ -73,8 +73,8 @@ holder.itemView.setOnClickListener(new View.OnClickListener() {
             super(view);
 
             mAvatarIv=view.findViewById(R.id.avatarIv);
-            mEmailTv=view.findViewById(R.id.nameTv);
-            mNameTv=view.findViewById(R.id.emailTv);
+            mNameTv=view.findViewById(R.id.nameTv);
+            mEmailTv=view.findViewById(R.id.emailTv);
 
         }
 
