@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -126,47 +128,58 @@ public class ChatActivity extends AppCompatActivity {
                     //get data
                     String name = "" + ds.child("name").getValue();
                     hisImage = "" + ds.child("image").getValue();
+                    String typingStatus = "" + ds.child("typingTo").getValue();
 
-                    //get value of onlinestatus
 
-                    Object onlineStatusObj = ds.child("onlineStatus").getValue();
-                    if (onlineStatusObj != null) {
-                        String onlineStatus = onlineStatusObj.toString(); // Convert the object to String
-                        if (!onlineStatus.isEmpty()) {
-                            if (onlineStatus.equals("online")) {
-                                // Hiển thị chấm màu xanh khi online
-                            
-                                onlineIndicator.setVisibility(View.VISIBLE);
-                                onlineIndicator.setImageResource(R.drawable.online_indicator_green);
-                                userStatusTv.setText(onlineStatus);
+                    //check typing status
+                    if(typingStatus.equals(myUid)){
+                        userStatusTv.setText("typing...");
+                    }else{
+
+                        //get value of onlinestatus
+
+                        Object onlineStatusObj = ds.child("onlineStatus").getValue();
+                        if (onlineStatusObj != null) {
+                            String onlineStatus = onlineStatusObj.toString(); // Convert the object to String
+                            if (!onlineStatus.isEmpty()) {
+                                if (onlineStatus.equals("online")) {
+                                    // Hiển thị chấm màu xanh khi online
+
+                                    onlineIndicator.setVisibility(View.VISIBLE);
+                                    onlineIndicator.setImageResource(R.drawable.online_indicator_green);
+                                    userStatusTv.setText(onlineStatus);
+                                } else {
+                                    // Hiển thị chấm màu xám khi offline
+                                    onlineIndicator.setVisibility(View.VISIBLE);
+                                    onlineIndicator.setImageResource(R.drawable.online_indicator_gray);
+                                    // Xử lý thời gian offline và cập nhật userStatusTv
+                                    try {
+                                        long timestamp = Long.parseLong(onlineStatus);
+                                        long currentTime = System.currentTimeMillis();
+                                        long timeDifference = currentTime - timestamp;
+                                        String timeAgo = getTimeAgo(timeDifference);
+                                        userStatusTv.setText(timeAgo);
+                                    } catch (NumberFormatException e) {
+                                        // Xử lý khi không thể chuyển đổi timestamp thành số
+                                        userStatusTv.setText("Offline");
+                                    }
+                                }
                             } else {
-                                // Hiển thị chấm màu xám khi offline
+                                // Xử lý trường hợp onlineStatus là trống
+                                userStatusTv.setText("Offline");
                                 onlineIndicator.setVisibility(View.VISIBLE);
                                 onlineIndicator.setImageResource(R.drawable.online_indicator_gray);
-                                // Xử lý thời gian offline và cập nhật userStatusTv
-                                try {
-                                    long timestamp = Long.parseLong(onlineStatus);
-                                    long currentTime = System.currentTimeMillis();
-                                    long timeDifference = currentTime - timestamp;
-                                    String timeAgo = getTimeAgo(timeDifference);
-                                    userStatusTv.setText(timeAgo);
-                                } catch (NumberFormatException e) {
-                                    // Xử lý khi không thể chuyển đổi timestamp thành số
-                                    userStatusTv.setText("Offline");
-                                }
                             }
                         } else {
-                            // Xử lý trường hợp onlineStatus là trống
+                            // Xử lý trường hợp onlineStatus là null
                             userStatusTv.setText("Offline");
                             onlineIndicator.setVisibility(View.VISIBLE);
                             onlineIndicator.setImageResource(R.drawable.online_indicator_gray);
                         }
-                    } else {
-                        // Xử lý trường hợp onlineStatus là null
-                        userStatusTv.setText("Offline");
-                        onlineIndicator.setVisibility(View.VISIBLE);
-                        onlineIndicator.setImageResource(R.drawable.online_indicator_gray);
+
                     }
+
+
 
 
                     //set data
@@ -204,6 +217,28 @@ public class ChatActivity extends AppCompatActivity {
                 } else {
                     sendMessaage(message);
                 }
+            }
+        });
+
+        //check edit text change listener
+        messageEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+               if(charSequence.toString().trim().length()==0){
+                   checkTypingStatus("noOne");
+               }else{
+                   checkTypingStatus(hisUid);//uid of receiver
+               }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
         checkUserStatus();
@@ -347,7 +382,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         String timeStamp= String.valueOf(System.currentTimeMillis());
-
+        checkTypingStatus("noOne");
         checkOnlineStatus(timeStamp);
         userRefForSeen.removeEventListener(seenListener);
     }
@@ -381,7 +416,15 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
+    private  void checkTypingStatus(String typing){
+        DatabaseReference dbRef= FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        HashMap<String,Object> hashMap= new HashMap<>();
+        hashMap.put("typingTo",typing);
+        dbRef.updateChildren(hashMap);
 
+
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

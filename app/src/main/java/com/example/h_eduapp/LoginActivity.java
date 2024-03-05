@@ -248,6 +248,7 @@ public class LoginActivity extends AppCompatActivity {
                         hashMap.put("image",""); // Đưa link hình ảnh vào HashMap (ở đây bạn có thể đưa thông tin ảnh đại diện nếu có)
                         hashMap.put("cover","");
                         hashMap.put("onlineStatus","online");
+                        hashMap.put("typingTo","noOne");
 
                         // Lấy tham chiếu đến Firebase Database
                         FirebaseDatabase database= FirebaseDatabase.getInstance();

@@ -131,6 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
                     hashMap.put("phone","");
                     hashMap.put("image","");
                     hashMap.put("onlineStatus","online");
+                    hashMap.put("typingTo","noOne");
                     hashMap.put("cover","");
                     //se add sau khi dang edit profile
                     //Firebse dt instance
