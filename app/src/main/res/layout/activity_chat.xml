@@ -14,6 +14,7 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
+
         <com.blogspot.atifsoftwares.circularimageview.CircularImageView
             android:id="@+id/profileIv"
             android:layout_width="35dp"
@@ -39,17 +40,33 @@
                 android:textStyle="bold"
 
                 />
-
-            <TextView
-                android:id="@+id/userStatusTv"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Online"
-                android:textColor="@color/white"
+                android:layout_height="match_parent">
 
-                android:textStyle="bold"
+                <ImageView
+                    android:id="@+id/onlineIndicator"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/online_indicator_green" />
 
-                />
+                <TextView
+                    android:id="@+id/userStatusTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/onlineIndicator"
+                    android:layout_toRightOf="@id/onlineIndicator"
+                    android:text="Online"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp" />
+            </RelativeLayout>
         </LinearLayout>
 
 

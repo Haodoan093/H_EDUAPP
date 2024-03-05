@@ -7,4 +7,7 @@
     <color name="colorPrimary">#9C27B0</color>
     <color name="colorPrimaryDark">#4D0A59</color>
     <color name="colorAccent">#9C27B0</color>
+    <color name="onlineIndicatorGreen">#00FF00</color>
+    <color name="onlineIndicatorGray">#808080</color>
+
 </resources>

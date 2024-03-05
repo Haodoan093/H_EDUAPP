@@ -34,9 +34,13 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -68,6 +72,7 @@ public class ChatActivity extends AppCompatActivity {
 
     AdapterChat adapterChat;
 
+    ImageView onlineIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,8 @@ public class ChatActivity extends AppCompatActivity {
         messageEt = findViewById(R.id.messageEt);
         sendBtn = findViewById(R.id.sendBtn);
         profileIv = findViewById(R.id.profileIv);
+        onlineIndicator = findViewById(R.id.onlineIndicator);
+
 
         //layout fo recyclerView
 
@@ -119,6 +126,48 @@ public class ChatActivity extends AppCompatActivity {
                     //get data
                     String name = "" + ds.child("name").getValue();
                     hisImage = "" + ds.child("image").getValue();
+
+                    //get value of onlinestatus
+
+                    Object onlineStatusObj = ds.child("onlineStatus").getValue();
+                    if (onlineStatusObj != null) {
+                        String onlineStatus = onlineStatusObj.toString(); // Convert the object to String
+                        if (!onlineStatus.isEmpty()) {
+                            if (onlineStatus.equals("online")) {
+                                // Hiển thị chấm màu xanh khi online
+                            
+                                onlineIndicator.setVisibility(View.VISIBLE);
+                                onlineIndicator.setImageResource(R.drawable.online_indicator_green);
+                                userStatusTv.setText(onlineStatus);
+                            } else {
+                                // Hiển thị chấm màu xám khi offline
+                                onlineIndicator.setVisibility(View.VISIBLE);
+                                onlineIndicator.setImageResource(R.drawable.online_indicator_gray);
+                                // Xử lý thời gian offline và cập nhật userStatusTv
+                                try {
+                                    long timestamp = Long.parseLong(onlineStatus);
+                                    long currentTime = System.currentTimeMillis();
+                                    long timeDifference = currentTime - timestamp;
+                                    String timeAgo = getTimeAgo(timeDifference);
+                                    userStatusTv.setText(timeAgo);
+                                } catch (NumberFormatException e) {
+                                    // Xử lý khi không thể chuyển đổi timestamp thành số
+                                    userStatusTv.setText("Offline");
+                                }
+                            }
+                        } else {
+                            // Xử lý trường hợp onlineStatus là trống
+                            userStatusTv.setText("Offline");
+                            onlineIndicator.setVisibility(View.VISIBLE);
+                            onlineIndicator.setImageResource(R.drawable.online_indicator_gray);
+                        }
+                    } else {
+                        // Xử lý trường hợp onlineStatus là null
+                        userStatusTv.setText("Offline");
+                        onlineIndicator.setVisibility(View.VISIBLE);
+                        onlineIndicator.setImageResource(R.drawable.online_indicator_gray);
+                    }
+
 
                     //set data
                     nameTv.setText(name);
@@ -164,6 +213,27 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
+    private String getTimeAgo(long timeDifference) {
+        // Convert milliseconds to minutes
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDifference);
+
+        if (minutes < 1) {
+            return "Just now";
+        } else if (minutes < 60) {
+            return minutes + " minutes ago";
+        } else {
+            // Convert minutes to hours
+            long hours = TimeUnit.MINUTES.toHours(minutes);
+            if (hours < 24) {
+                return hours + " hours ago";
+            } else {
+                // Convert hours to days
+                long days = TimeUnit.HOURS.toDays(hours);
+                return days + " days ago";
+            }
+        }
+    }
+
 
     private void seenMessage() {
         userRefForSeen = FirebaseDatabase.getInstance().getReference("Chats");
@@ -269,13 +339,23 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         checkUserStatus();
+        checkOnlineStatus("online");
         super.onStart();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        String timeStamp= String.valueOf(System.currentTimeMillis());
+
+        checkOnlineStatus(timeStamp);
         userRefForSeen.removeEventListener(seenListener);
+    }
+
+    @Override
+    protected void onResume() {
+        checkOnlineStatus("online");
+        super.onResume();
     }
 
     private void checkUserStatus() {
@@ -291,6 +371,17 @@ public class ChatActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    private  void checkOnlineStatus(String status){
+        DatabaseReference dbRef= FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        HashMap<String,Object> hashMap= new HashMap<>();
+        hashMap.put("onlineStatus",status);
+        dbRef.updateChildren(hashMap);
+
+
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

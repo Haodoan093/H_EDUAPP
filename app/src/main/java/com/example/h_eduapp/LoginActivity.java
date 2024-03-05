@@ -247,6 +247,7 @@ public class LoginActivity extends AppCompatActivity {
                         hashMap.put("phone",""); // Đưa số điện thoại vào HashMap (ở đây bạn có thể đưa thông tin số điện thoại nếu có)
                         hashMap.put("image",""); // Đưa link hình ảnh vào HashMap (ở đây bạn có thể đưa thông tin ảnh đại diện nếu có)
                         hashMap.put("cover","");
+                        hashMap.put("onlineStatus","online");
 
                         // Lấy tham chiếu đến Firebase Database
                         FirebaseDatabase database= FirebaseDatabase.getInstance();
