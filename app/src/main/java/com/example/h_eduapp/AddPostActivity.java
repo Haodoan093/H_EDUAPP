@@ -165,6 +165,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         checkUserStatus();
     }
+ 
 
     private void uploadData(String title, String desciption, String uri) {
 

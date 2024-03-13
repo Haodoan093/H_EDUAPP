@@ -152,7 +152,7 @@ public class UserFragment extends Fragment {
             addPostItem.setVisible(false);
         }
 
-      
+
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
 
