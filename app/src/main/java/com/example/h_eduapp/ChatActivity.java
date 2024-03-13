@@ -26,6 +26,12 @@ import com.example.h_eduapp.adapters.AdapterChat;
 import com.example.h_eduapp.adapters.AdapterUsers;
 import com.example.h_eduapp.models.ModelChat;
 import com.example.h_eduapp.models.ModelUsers;
+import com.example.h_eduapp.notifications.APIService;
+import com.example.h_eduapp.notifications.Client;
+import com.example.h_eduapp.notifications.Data;
+import com.example.h_eduapp.notifications.Respone;
+import com.example.h_eduapp.notifications.Sender;
+import com.example.h_eduapp.notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,6 +49,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -76,6 +86,9 @@ public class ChatActivity extends AppCompatActivity {
 
     ImageView onlineIndicator;
 
+    APIService apiService;
+    boolean notify = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +118,10 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        //creat api sevice
+
+        apiService = Client.getRetrofit("https://fcm.googleaips.com/").create(APIService.class);
+
 
         //On cllick user from uers list we have passed that user's UID using intent
         //So get that uid here to get the profile picture, name and start chat with that user
@@ -132,9 +149,9 @@ public class ChatActivity extends AppCompatActivity {
 
 
                     //check typing status
-                    if(typingStatus.equals(myUid)){
+                    if (typingStatus.equals(myUid)) {
                         userStatusTv.setText("typing...");
-                    }else{
+                    } else {
 
                         //get value of onlinestatus
 
@@ -180,8 +197,6 @@ public class ChatActivity extends AppCompatActivity {
                     }
 
 
-
-
                     //set data
                     nameTv.setText(name);
 
@@ -208,6 +223,8 @@ public class ChatActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                notify = true;
                 //get text from edit
                 String message = messageEt.getText().toString().trim();
 
@@ -217,6 +234,7 @@ public class ChatActivity extends AppCompatActivity {
                 } else {
                     sendMessaage(message);
                 }
+                messageEt.setText("");
             }
         });
 
@@ -229,11 +247,11 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-               if(charSequence.toString().trim().length()==0){
-                   checkTypingStatus("noOne");
-               }else{
-                   checkTypingStatus(hisUid);//uid of receiver
-               }
+                if (charSequence.toString().trim().length() == 0) {
+                    checkTypingStatus("noOne");
+                } else {
+                    checkTypingStatus(hisUid);//uid of receiver
+                }
             }
 
             @Override
@@ -246,8 +264,8 @@ public class ChatActivity extends AppCompatActivity {
         seenMessage();
 
 
-
     }
+
     private String getTimeAgo(long timeDifference) {
         // Convert milliseconds to minutes
         long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDifference);
@@ -368,7 +386,67 @@ public class ChatActivity extends AppCompatActivity {
         hashMap.put("isSeen", false);
         reference.child("Chats").push().setValue(hashMap);
 
-        messageEt.setText("");
+
+
+        String msg = message;
+        DatabaseReference data = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        data.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ModelUsers user = snapshot.getValue(ModelUsers.class);
+                if(notify){
+                    sendNotification(hisUid,user.getName(),message);
+                }
+                notify=false;
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void sendNotification(String hisUid, String name, String message) {
+
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allTokens.orderByKey().equalTo(hisUid);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds: snapshot.getChildren()){
+                    Token token= ds.getValue(Token.class);
+                    Data data= new Data(myUid,name+" : "+message, "New Message",hisUid
+                    ,R.drawable.ic_default_img_users
+                    );
+                    Sender sender= new Sender(data,token.getToken());
+
+                    apiService.sendNotificatioon(sender)
+                            .enqueue(new Callback<Respone>() {
+                                @Override
+                                public void onResponse(Call<Respone> call, Response<Respone> response) {
+                                    Toast.makeText(ChatActivity.this, ""+response.message(), Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onFailure(Call<Respone> call, Throwable t) {
+
+                                }
+                            });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
     }
 
     @Override
@@ -381,7 +459,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        String timeStamp= String.valueOf(System.currentTimeMillis());
+        String timeStamp = String.valueOf(System.currentTimeMillis());
         checkTypingStatus("noOne");
         checkOnlineStatus(timeStamp);
         userRefForSeen.removeEventListener(seenListener);
@@ -407,21 +485,20 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private  void checkOnlineStatus(String status){
-        DatabaseReference dbRef= FirebaseDatabase.getInstance().getReference("Users").child(myUid);
-        HashMap<String,Object> hashMap= new HashMap<>();
-        hashMap.put("onlineStatus",status);
+    private void checkOnlineStatus(String status) {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("onlineStatus", status);
         dbRef.updateChildren(hashMap);
-
 
 
     }
-    private  void checkTypingStatus(String typing){
-        DatabaseReference dbRef= FirebaseDatabase.getInstance().getReference("Users").child(myUid);
-        HashMap<String,Object> hashMap= new HashMap<>();
-        hashMap.put("typingTo",typing);
-        dbRef.updateChildren(hashMap);
 
+    private void checkTypingStatus(String typing) {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("typingTo", typing);
+        dbRef.updateChildren(hashMap);
 
 
     }

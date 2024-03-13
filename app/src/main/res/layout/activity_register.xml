@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:text="Register"
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
@@ -22,38 +22,67 @@
         android:id="@+id/emailEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_below="@id/textView"
         android:layout_marginTop="20dp"
         android:hint="Email"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/nameEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailEt"
+        android:layout_marginTop="20dp"
+        android:hint="Name"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/phoneEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameEt"
+        android:layout_marginTop="20dp"
+        android:hint="Phone"
         android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/passwordEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/emailEt"
-        android:layout_centerInParent="true"
-        android:minHeight="48dp"
+        android:layout_below="@id/phoneEt"
+        android:layout_marginTop="20dp"
         android:hint="Password"
+        android:minHeight="48dp"
         android:inputType="textPassword"
-    app:passwordToggleEnabled="true" />
+        app:passwordToggleEnabled="true" />
 
+    <EditText
+        android:id="@+id/repasswordEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordEt"
+        android:layout_marginTop="20dp"
+        android:hint="Confirm Password"
+        android:minHeight="48dp"
+        android:inputType="textPassword"
+        app:passwordToggleEnabled="true" />
 
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/passwordEt"
+        android:layout_below="@id/repasswordEt"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:text="Register" />
-<!--    Have account-->
+
     <TextView
         android:id="@+id/have_accountTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Already have account? Login"
+        android:layout_below="@id/registerBtn"
+        android:layout_marginTop="20dp"
+        android:text="Already have an account? Login"
         android:textAlignment="center"
-        android:layout_marginTop="30sp"
-        android:textColor="@color/black"
-        android:layout_below="@+id/registerBtn"/>
+        android:textColor="@color/black" />
 </RelativeLayout>

@@ -26,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText mEmailEt, mPassswordEt;
+    EditText mEmailEt, mNameEt, mPhoneEt, mPassswordEt, mRePasswordEt;
     Button mRegissterbtn;
 
     TextView mHaveAccount;
@@ -45,7 +45,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         //ánh xạ
         mEmailEt = findViewById(R.id.emailEt);
+        mNameEt = findViewById(R.id.nameEt);
+        mPhoneEt = findViewById(R.id.phoneEt);
         mPassswordEt = findViewById(R.id.passwordEt);
+        mRePasswordEt = findViewById(R.id.repasswordEt);
         mRegissterbtn = findViewById(R.id.registerBtn);
 
         mHaveAccount= findViewById(R.id.have_accountTv);
@@ -58,43 +61,47 @@ public class RegisterActivity extends AppCompatActivity {
         progressDialog.setMessage("Registering User...");
 
 
-       //  ActionBar
-       ActionBar actionBar = getSupportActionBar();
+        //  ActionBar
+        ActionBar actionBar = getSupportActionBar();
 
-      //  Đặt tiêu đề của ActionBar
-     actionBar.setTitle("Create Account");
+        //  Đặt tiêu đề của ActionBar
+        actionBar.setTitle("Create Account");
 
-      //  Kích hoạt nút quay lại (back) trong ActionBar
-       actionBar.setDisplayHomeAsUpEnabled(true);
+        //  Kích hoạt nút quay lại (back) trong ActionBar
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-      //  Kích hoạt nút home trong ActionBar
-      actionBar.setDisplayShowHomeEnabled(true);
+        //  Kích hoạt nút home trong ActionBar
+        actionBar.setDisplayShowHomeEnabled(true);
 
         mRegissterbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String email = mEmailEt.getText().toString().trim();
+                String name = mNameEt.getText().toString().trim();
+                String phone = mPhoneEt.getText().toString().trim();
                 String password = mPassswordEt.getText().toString().trim();
+                String repassword = mRePasswordEt.getText().toString().trim();
 
                 //validate
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    //set error and focuss to email edittext
+                    //set error and focus to email EditText
                     mEmailEt.setError("Invalid Email");
-                    mEmailEt.setFocusable(true);
+                    mEmailEt.requestFocus();
 
                 } else if (password.length() < 6) {
-                    //set error and focuss to password edittext
+                    //set error and focus to password EditText
                     mPassswordEt.setError("Password length at least 6 characters ");
-                    mPassswordEt.setFocusable(true);
+                    mPassswordEt.requestFocus();
+
+                } else if (!password.equals(repassword)) {
+                    //set error and focus to re-password EditText
+                    mRePasswordEt.setError("Passwords do not match");
+                    mRePasswordEt.requestFocus();
 
                 } else {
-                    registerUser(email, password);
+                    registerUser(email, password, name, phone);
                 }
-
-
             }
-
-
         });
 
         mHaveAccount.setOnClickListener(new View.OnClickListener() {
@@ -106,8 +113,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void registerUser(String email, String password) {
-        //email and password patten is valid, show progress dialog and start registering user
+    private void registerUser(String email, String password, final String name, final String phone) {
+        //email and password pattern is valid, show progress dialog and start registering user
         progressDialog.show();
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -126,9 +133,9 @@ public class RegisterActivity extends AppCompatActivity {
                     HashMap<Object,String> hashMap= new HashMap<>();
                     //put info in hasmap
                     hashMap.put("email",email);
-                    hashMap.put("name","");
+                    hashMap.put("name", name);
                     hashMap.put("uid",uid);
-                    hashMap.put("phone","");
+                    hashMap.put("phone",phone);
                     hashMap.put("image","");
                     hashMap.put("onlineStatus","online");
                     hashMap.put("typingTo","noOne");

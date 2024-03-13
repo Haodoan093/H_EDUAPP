@@ -65,6 +65,7 @@ public class UserFragment extends Fragment {
 
     }
 
+
     private void getAllUsers() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         //get path og datatbase named "Users" containing users info
@@ -144,6 +145,14 @@ public class UserFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.menu_main, menu);
+
+        // Hide the menu item if it exists
+        MenuItem addPostItem = menu.findItem(R.id.action_addpost);
+        if (addPostItem != null) {
+            addPostItem.setVisible(false);
+        }
+
+      
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
 
@@ -188,6 +197,7 @@ public class UserFragment extends Fragment {
             firebaseAuth.signOut();
             checkUserStatus();
         }
+
         return super.onOptionsItemSelected(item);
     }
 
