@@ -1,6 +1,9 @@
 package com.example.h_eduapp;
 
 import static android.app.Activity.RESULT_OK;
+
+import com.example.h_eduapp.adapters.AdapterPosts;
+import com.example.h_eduapp.models.ModelPoost;
 import com.google.firebase.database.FirebaseDatabase;
 
 import android.app.AlertDialog;
@@ -17,7 +20,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
 import android.text.InputType;
@@ -31,8 +37,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.storage.FirebaseStorage;
 
 import com.google.android.gms.auth.api.signin.internal.Storage;
@@ -52,7 +60,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,6 +87,8 @@ public class ProfileFragment extends Fragment {
 
     ProgressDialog pd;
 
+    RecyclerView postRecyclerview;
+
     //permesssions contants;
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
@@ -88,6 +100,10 @@ public class ProfileFragment extends Fragment {
     String storagePermisssions[];
 
     //uri of picked image
+
+    List<ModelPoost> postlist;
+    AdapterPosts adapterPosts;
+    String uid;
 
     Uri image_uri;
 
@@ -108,7 +124,7 @@ public class ProfileFragment extends Fragment {
         //init firebase
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
-
+        postlist= new ArrayList<>();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Users");
 
@@ -121,6 +137,7 @@ public class ProfileFragment extends Fragment {
         phoneTv = view.findViewById(R.id.phoneTv);
         coverIv = view.findViewById(R.id.coverIv);
         fab = view.findViewById(R.id.fab);
+        postRecyclerview = view.findViewById(R.id.recyclerview_posts);
         //init arrays of permisssion
         // Khai báo mảng cameraPermissions
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}; // Thêm quyền WRITE_EXTERNAL_STORAGE vào đây
@@ -186,8 +203,89 @@ public class ProfileFragment extends Fragment {
                 showEditProfileDialog();
             }
         });
+
+        checkUserStatus();
+        loadMyPosts();
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void loadMyPosts() {
+        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getActivity());
+
+        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
+
+        postRecyclerview.setLayoutManager(linearLayoutManager);
+
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Posts");
+
+        Query query= ref.orderByChild("uid").equalTo(uid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postlist.clear();
+                for(DataSnapshot ds: snapshot.getChildren()){
+                    ModelPoost modelPoost= ds.getValue(ModelPoost.class);
+
+                    postlist.add(modelPoost);
+
+
+                    adapterPosts= new AdapterPosts(getActivity(),postlist);
+
+                    postRecyclerview.setAdapter(adapterPosts);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+    private void searchMyPosts(String searchQuery) {
+        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getActivity());
+
+        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
+
+        postRecyclerview.setLayoutManager(linearLayoutManager);
+
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Posts");
+
+        Query query= ref.orderByChild("uid").equalTo(uid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postlist.clear();
+                for(DataSnapshot ds: snapshot.getChildren()){
+                    ModelPoost mypost= ds.getValue(ModelPoost.class);
+
+
+                    if(mypost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase())||
+                    mypost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
+                        postlist.add(mypost);
+                    }
+
+
+
+                    adapterPosts= new AdapterPosts(getActivity(),postlist);
+
+                    postRecyclerview.setAdapter(adapterPosts);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private boolean checkStoragePermission() {
@@ -221,7 +319,7 @@ public class ProfileFragment extends Fragment {
 
     private void showEditProfileDialog() {
 
-        String options[] = {"Edit profile picture ", "Edit cover photo","Edit name", "Edit phone"};
+        String options[] = {"Edit profile picture ", "Edit cover photo", "Edit name", "Edit phone"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Choose Action");
@@ -301,6 +399,25 @@ public class ProfileFragment extends Fragment {
                                     Toast.makeText(getActivity(), " " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
+                    //if user edit his name , also change it from hist posts
+                    if(key.equals("name")){
+                        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Posts");
+                        Query query = ref.orderByChild("uid").equalTo(uid);
+                        query.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot ds :snapshot.getChildren()){
+                                    String child = ds.getKey();
+                                    snapshot.getRef().child(child).child("uName").setValue(value);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
                 } else {
                     Toast.makeText(getActivity(), "Please Enter " + key, Toast.LENGTH_SHORT).show();
                 }
@@ -378,7 +495,8 @@ public class ProfileFragment extends Fragment {
                         Toast.makeText(getActivity(), "Please enable camara and storage permission", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }break;
+            }
+            break;
             case STORAGE_REQUEST_CODE: {
                 if (grantResults.length > 0) {
 
@@ -392,7 +510,8 @@ public class ProfileFragment extends Fragment {
                         Toast.makeText(getActivity(), "Please enable storage permission", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }break;
+            }
+            break;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -453,6 +572,24 @@ public class ProfileFragment extends Fragment {
                                                     Toast.makeText(getActivity(), "Error Updating Image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             });
+                                    if(profileOrCoverPhoto.equals("image")){
+                                        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Posts");
+                                        Query query = ref.orderByChild("uid").equalTo(uid);
+                                        query.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                for (DataSnapshot ds :snapshot.getChildren()){
+                                                    String child = ds.getKey();
+                                                    snapshot.getRef().child(child).child("uDp").setValue(downloadUri.toString());
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                                    }
                                 } else {
                                     // Nếu không nhận được URI, ẩn tiến trình và hiển thị thông báo lỗi
                                     pd.dismiss();
@@ -503,7 +640,6 @@ public class ProfileFragment extends Fragment {
     }
 
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);// to show menu option in fragment
@@ -515,7 +651,32 @@ public class ProfileFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.menu_main, menu);
 
-        super.onCreateOptionsMenu(menu,menuInflater);
+        MenuItem item= menu.findItem(R.id.action_search);
+        SearchView searchView= (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                //goi khi search
+                if(!TextUtils.isEmpty(s)){
+                    searchMyPosts(s);
+                }else{
+                    loadMyPosts();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // goi khi khong tim kiem
+                if(!TextUtils.isEmpty(s)){
+                    searchMyPosts(s);
+                }else{
+                    loadMyPosts();
+                }
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, menuInflater);
     }
 
     @Override
@@ -530,10 +691,11 @@ public class ProfileFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void checkUserStatus() {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
-
+            uid = user.getUid();
             // Người dùng đã đăng nhập
         } else {
             // Người dùng chưa đăng nhập, chuyển hướng về màn hình đăng nhập

@@ -66,7 +66,7 @@ public class AddPostActivity extends AppCompatActivity {
 
 
     ProgressDialog pd;
-
+    boolean isUserDataReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +91,10 @@ public class AddPostActivity extends AppCompatActivity {
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        checkUserStatus();
+
         //get soome info of current user to include in post
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
         Query query = databaseReference.orderByChild("email").equalTo(email);
@@ -98,18 +102,18 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
-
-
                     name = "" + ds.child("name").getValue();
                     email = "" + ds.child("email").getValue();
                     dp = "" + ds.child("image").getValue();
                 }
+                // Gán giá trị cho biến cờ
 
+                isUserDataReady = true;
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Xử lý lỗi nếu có
             }
         });
 
@@ -123,9 +127,7 @@ public class AddPostActivity extends AppCompatActivity {
 
 
         actionBar.setSubtitle(email);
-        firebaseAuth = FirebaseAuth.getInstance();
 
-        checkUserStatus();
         //get iamge form camera /gallary
         imageIv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +136,7 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
-
+        checkUserStatus();
         //upload btn
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,12 +165,16 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
 
-        checkUserStatus();
+
     }
  
 
     private void uploadData(String title, String desciption, String uri) {
-
+        if (!isUserDataReady) {
+            // Nếu chưa sẵn sàng, không thực hiện upload và hiển thị thông báo hoặc xử lý phù hợp
+            Toast.makeText(this, "Please wait, user data is not ready yet", Toast.LENGTH_SHORT).show();
+            return;
+        }
         pd.setMessage("PPublishing post...");
         pd.show();
 
@@ -193,13 +199,14 @@ public class AddPostActivity extends AppCompatActivity {
                                 HashMap<Object, String> hashMap = new HashMap<>();
 
                                 hashMap.put("uid", uid);
-                                hashMap.put("uName", name);
-                                hashMap.put("uEmail", uid);
+                                hashMap.put("uName", name);//khong thay
                                 hashMap.put("uDp", dp);
+                                hashMap.put("uEmail", email);
+
                                 hashMap.put("pId", timeStamp);
                                 hashMap.put("pTitle", title);
                                 hashMap.put("pDescr", desciption);
-                                hashMap.put("pImage", downloadUri);
+                                hashMap.put("pImage", downloadUri);//khong thay
                                 hashMap.put("pTime", timeStamp);
 
 
@@ -244,13 +251,15 @@ public class AddPostActivity extends AppCompatActivity {
 
             hashMap.put("uid", uid);
             hashMap.put("uName", name);
-            hashMap.put("uEmail", uid);
+            hashMap.put("uEmail", email);
+
             hashMap.put("uDp", dp);
             hashMap.put("pId", timeStamp);
             hashMap.put("pTitle", title);
             hashMap.put("pDescr", desciption);
             hashMap.put("pImage", "noImage");
             hashMap.put("pTime", timeStamp);
+
 
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
