@@ -454,7 +454,7 @@ public class AddPostActivity extends AppCompatActivity {
                                 hashMap.put("uName", name);//khong thay
                                 hashMap.put("uDp", dp);
                                 hashMap.put("uEmail", email);
-
+                                hashMap.put("pLikes", "0");
                                 hashMap.put("pId", timeStamp);
                                 hashMap.put("pTitle", title);
                                 hashMap.put("pDescr", desciption);
@@ -504,7 +504,7 @@ public class AddPostActivity extends AppCompatActivity {
             hashMap.put("uid", uid);
             hashMap.put("uName", name);
             hashMap.put("uEmail", email);
-
+            hashMap.put("pLikes", "0");
             hashMap.put("uDp", dp);
             hashMap.put("pId", timeStamp);
             hashMap.put("pTitle", title);

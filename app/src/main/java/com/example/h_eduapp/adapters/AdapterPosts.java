@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -50,10 +51,19 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
 
     String myUid;
 
+
+    private DatabaseReference likesRef;
+    private DatabaseReference postsRef;
+
+    boolean mProcessLike=false;
+
     public AdapterPosts(Context context, List<ModelPoost> postList) {
         this.context = context;
         this.postList = postList;
         myUid= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        likesRef=FirebaseDatabase.getInstance().getReference().child("Likes");
+        postsRef=FirebaseDatabase.getInstance().getReference().child("Posts");
+
     }
 
 
@@ -76,6 +86,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         String pDescription = postList.get(position).getpDescr();
         String pImage = postList.get(position).getpImage();
         String pTimeStamp = postList.get(position).getpTime();
+        String pLikes = postList.get(position).getpLikes();
 
 
         ///convert timsatamp
@@ -97,6 +108,9 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.pTimeTv.setText(pTime);
         holder.pTitleTv.setText(pTitle);
         holder.pDesciptionTv.setText(pDescription);
+        holder.pLikesTv.setText(pLikes+"  Likes");
+
+        setLikes(holder,pId);
         try {
             Picasso.get().load(uDp)
                     .placeholder(R.drawable.ic_default_img_users)
@@ -131,7 +145,32 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show();
+              final int pLikes= Integer.parseInt(postList.get(position).getpLikes());
+              mProcessLike=true;
+
+              final String postIde= postList.get(position).getpId();
+              likesRef.addValueEventListener(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                      if(mProcessLike){
+                          if(snapshot.child(postIde).hasChild(myUid)){
+                              //already liked, so remove like
+                              postsRef.child(postIde).child("pLikes").setValue(""+(pLikes-1));
+                              likesRef.child(postIde).child(myUid).removeValue();
+                              mProcessLike=false;
+                          }else{
+                              postsRef.child(postIde).child("pLikes").setValue(""+(pLikes+1));
+                              likesRef.child(postIde).child(myUid).setValue("Liked");
+                              mProcessLike=false;
+                          }
+                      }
+                  }
+
+                  @Override
+                  public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                  }
+              });
             }
         });
         //comment
@@ -160,6 +199,27 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             }
         });
 
+
+    }
+
+    private void setLikes(MyHolder holder, String key) {
+        likesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if(snapshot.child(key).hasChild(myUid)){
+                    holder.likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_liked,0,0,0);
+                    holder.likeBtn.setText("Liked");
+                }else{
+                    holder.likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like,0,0,0);
+                    holder.likeBtn.setText("Like");
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
