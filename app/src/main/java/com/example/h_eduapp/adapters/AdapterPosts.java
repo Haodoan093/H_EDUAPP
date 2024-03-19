@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.h_eduapp.AddPostActivity;
 import com.example.h_eduapp.R;
 import com.example.h_eduapp.ThereProfileActivity;
 import com.example.h_eduapp.models.ModelChat;
@@ -168,7 +169,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
 
 
         if(uid.equals(myUid)){
-            popupMenu.getMenu().add(Menu.NONE,0,0,"Delete");
+            popupMenu.getMenu().add(Menu.NONE,0,0,"Edit");
+            popupMenu.getMenu().add(Menu.NONE,1,0,"Delete");
         }
 
 
@@ -179,6 +181,15 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id= menuItem.getItemId();
                 if(id==0){
+                   //edit
+                    Intent  intent= new Intent(context, AddPostActivity.class);
+                    intent.putExtra("key","editPost");
+                    intent.putExtra("editPostId",pId);
+                    intent.putExtra("editPostImage",pImage);
+                    context.startActivity(intent);
+
+                }
+                if(id==1){
                     //delete is clicked
                     beginDelte(pId,pImage);
 

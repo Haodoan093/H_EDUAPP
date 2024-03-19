@@ -51,8 +51,6 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         checkUserStatus();
-        //update token
-        updateToken();
     }
 
     public void updateToken() {
@@ -125,6 +123,10 @@ public class DashboardActivity extends AppCompatActivity {
             SharedPreferences.Editor editor= sp.edit();
             editor.putString("Current_USERID",mUid);
             editor.apply();
+
+
+            //update token
+            updateToken();
         } else {
             // Người dùng chưa đăng nhập, chuyển hướng về màn hình đăng nhập
             startActivity(new Intent(DashboardActivity.this, MainActivity.class));

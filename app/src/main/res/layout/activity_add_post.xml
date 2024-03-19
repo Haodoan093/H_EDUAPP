@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:background="#4882AF"
+            android:background="#B3E876"
             android:minHeight="200dp" />
 
         <EditText
