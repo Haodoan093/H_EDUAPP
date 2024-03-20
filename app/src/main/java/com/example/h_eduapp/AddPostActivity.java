@@ -190,6 +190,7 @@ public class AddPostActivity extends AppCompatActivity {
 
     }
 
+
     private void beginUpdate(String title, String desciption, String editPostId) {
 
         pd.setMessage("Updating Post...");

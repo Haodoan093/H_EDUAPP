@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.h_eduapp.AddPostActivity;
+import com.example.h_eduapp.PostDetailActivity;
 import com.example.h_eduapp.R;
 import com.example.h_eduapp.ThereProfileActivity;
 import com.example.h_eduapp.models.ModelChat;
@@ -87,6 +88,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         String pImage = postList.get(position).getpImage();
         String pTimeStamp = postList.get(position).getpTime();
         String pLikes = postList.get(position).getpLikes();
+        String pComments = postList.get(position).getpComments();
 
 
         ///convert timsatamp
@@ -109,6 +111,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.pTitleTv.setText(pTitle);
         holder.pDesciptionTv.setText(pDescription);
         holder.pLikesTv.setText(pLikes+"  Likes");
+        holder.pCommentsTv.setText(pComments+"  Comments");
 
         setLikes(holder,pId);
         try {
@@ -145,6 +148,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final int position = holder.getAdapterPosition();
               final int pLikes= Integer.parseInt(postList.get(position).getpLikes());
               mProcessLike=true;
 
@@ -177,7 +181,9 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.commentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Comment", Toast.LENGTH_SHORT).show();
+               Intent intent= new Intent(context, PostDetailActivity.class);
+               intent.putExtra("postId",pId);
+               context.startActivity(intent);
             }
         });
         //share
@@ -232,6 +238,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             popupMenu.getMenu().add(Menu.NONE,0,0,"Edit");
             popupMenu.getMenu().add(Menu.NONE,1,0,"Delete");
         }
+        popupMenu.getMenu().add(Menu.NONE,2,0,"View Detail");
+
 
 
         //item click listener
@@ -248,6 +256,11 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                     intent.putExtra("editPostImage",pImage);
                     context.startActivity(intent);
 
+                }
+                if (id==2){
+                    Intent intent= new Intent(context, PostDetailActivity.class);
+                    intent.putExtra("postId",pId);
+                    context.startActivity(intent);
                 }
                 if(id==1){
                     //delete is clicked
@@ -347,7 +360,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
 
     class MyHolder extends RecyclerView.ViewHolder {
         ImageView uPictureIv, pImageIv;
-        TextView uNameTv, pTimeTv, pTitleTv, pDesciptionTv, pLikesTv;
+        TextView uNameTv, pTimeTv, pTitleTv, pDesciptionTv, pLikesTv,pCommentsTv;
         Button likeBtn, commentBtn, shareBtn;
         ImageButton moreBtn;
 
@@ -368,6 +381,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             commentBtn = itemView.findViewById(R.id.commentBtn);
             shareBtn = itemView.findViewById(R.id.shareBtn);
             moreBtn = itemView.findViewById(R.id.moreBtn);
+            pCommentsTv = itemView.findViewById(R.id.pCommentsTv);
             profileLayout = itemView.findViewById(R.id.profileLayout);
 
         }
