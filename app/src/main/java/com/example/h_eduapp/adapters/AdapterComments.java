@@ -1,17 +1,25 @@
 package com.example.h_eduapp.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.h_eduapp.R;
 import com.example.h_eduapp.models.ModelComment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -24,9 +32,18 @@ public class AdapterComments extends  RecyclerView.Adapter<AdapterComments.MyHol
     Context context;
     List<ModelComment> commentList;
 
+    String myUid,postId;
+
     public AdapterComments(Context context, List<ModelComment> commentList) {
         this.context = context;
         this.commentList = commentList;
+    }
+
+    public AdapterComments(Context context, List<ModelComment> commentList, String myUid, String postId) {
+        this.context = context;
+        this.commentList = commentList;
+        this.myUid = myUid;
+        this.postId = postId;
     }
 
     @NonNull
@@ -74,6 +91,59 @@ public class AdapterComments extends  RecyclerView.Adapter<AdapterComments.MyHol
             // Handle exception if Picasso fails to load image
         }
 
+        //comment click listener
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(myUid.equals(uid)){
+                    //true show dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getRootView().getContext());
+
+                    builder.setTitle("Delete");
+                    builder.setMessage("Are you sure to delete this comment ?");
+                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+///delete cmt
+                            deleteComment(cid);
+                        }
+                    });
+                    builder.setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                          //dismiss dialoog
+                          dialogInterface.dismiss();
+                        }
+                    });
+                    builder.create().show();
+                }else{
+                    // not my comment
+                    Toast.makeText(context, "Can't delete other's comment...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    private void deleteComment(String cid) {
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Posts").child(postId);
+        ref.child("Comments").child(cid).removeValue();
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String comments = "" + snapshot.child("pComments").getValue();
+                int newCommentVal = Integer.parseInt(comments) - 1;
+
+                ref.child("pComments").setValue("" + newCommentVal);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
