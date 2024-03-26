@@ -3,6 +3,8 @@ package com.example.h_eduapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -21,6 +23,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.h_eduapp.adapters.AdapterComments;
+import com.example.h_eduapp.models.ModelComment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,15 +40,17 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class PostDetailActivity extends AppCompatActivity {
 
     ////to get detail of user and post
-    String myUid, myEmail,hisUid, myName, myDp,
-    pImage, postId, pLikes, hisDp, hisNamel;
+    String myUid, myEmail, hisUid, myName, myDp,
+            pImage, postId, pLikes, hisDp, hisNamel;
 
     boolean mProcessComment = false;
     boolean mProcessLike = false;
@@ -54,6 +60,10 @@ public class PostDetailActivity extends AppCompatActivity {
     TextView nameTv, pTimeTv, pTitleTv, pDescriptionTv, pLikesTv, pCommentsTv;
     Button likeBtn, shareBtn;
     LinearLayout profileLayout;
+    RecyclerView recyclerView;
+
+    List<ModelComment> commentList;
+    AdapterComments adapterComments;
 
 
     ProgressDialog pd;
@@ -97,6 +107,7 @@ public class PostDetailActivity extends AppCompatActivity {
         cAvatarIv = findViewById(R.id.cAvatarIv);
         sendBtn = findViewById(R.id.sendBtn);
         moreBtn = findViewById(R.id.moreBtn);
+        recyclerView = findViewById(R.id.recyclerView);
 
         loadPostInfo();
         checkUserStatus();
@@ -105,7 +116,7 @@ public class PostDetailActivity extends AppCompatActivity {
         setLikes();
         //set title of actionbar
         actionBar.setSubtitle("SignedIn as: " + myEmail);
-
+        loadComments();
 
         //send Comment button click
 
@@ -133,14 +144,44 @@ public class PostDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void loadComments() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        commentList = new ArrayList<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts").child(postId).child("Comments");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                commentList.clear();
+                for (DataSnapshot ds: snapshot.getChildren()){
+                    ModelComment modelComment= ds.getValue(ModelComment.class);
+
+                    commentList.add(modelComment);
+
+                    adapterComments = new AdapterComments(getApplicationContext(),commentList);
+
+
+                    recyclerView.setAdapter(adapterComments);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
     private void showMoreOptions() {
-        PopupMenu popupMenu = new PopupMenu(this,moreBtn, Gravity.END);
+        PopupMenu popupMenu = new PopupMenu(this, moreBtn, Gravity.END);
 
 
-
-        if(hisUid.equals(myUid)){
-            popupMenu.getMenu().add(Menu.NONE,0,0,"Edit");
-            popupMenu.getMenu().add(Menu.NONE,1,0,"Delete");
+        if (hisUid.equals(myUid)) {
+            popupMenu.getMenu().add(Menu.NONE, 0, 0, "Edit");
+            popupMenu.getMenu().add(Menu.NONE, 1, 0, "Delete");
         }
 
         //item click listener
@@ -148,18 +189,18 @@ public class PostDetailActivity extends AppCompatActivity {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                int id= menuItem.getItemId();
-                if(id==0){
+                int id = menuItem.getItemId();
+                if (id == 0) {
                     //edit
-                    Intent  intent= new Intent(PostDetailActivity.this, AddPostActivity.class);
-                    intent.putExtra("key","editPost");
-                    intent.putExtra("editPostId",postId);
-                   // intent.putExtra("editPostImage",pImage);
+                    Intent intent = new Intent(PostDetailActivity.this, AddPostActivity.class);
+                    intent.putExtra("key", "editPost");
+                    intent.putExtra("editPostId", postId);
+                    // intent.putExtra("editPostImage",pImage);
                     startActivity(intent);
 
                 }
 
-                if(id==1){
+                if (id == 1) {
                     //delete is clicked
                     beginDelte();
 
@@ -172,30 +213,30 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void beginDelte() {
-        if(pImage.equals("noImage")){
+        if (pImage.equals("noImage")) {
             deleteWithoutImage();
-        }else{
+        } else {
             deleteWithImage();
         }
     }
 
     private void deleteWithImage() {
-        ProgressDialog pd= new ProgressDialog(this);
+        ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("Deleting...");
 //del image using url
         //del froom data using post id
-        StorageReference picRef= FirebaseStorage.getInstance().getReferenceFromUrl(pImage);
+        StorageReference picRef = FirebaseStorage.getInstance().getReferenceFromUrl(pImage);
         picRef.delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
 
-                        Query query= FirebaseDatabase.getInstance().getReference("Posts").orderByChild("pId").equalTo(postId);
+                        Query query = FirebaseDatabase.getInstance().getReference("Posts").orderByChild("pId").equalTo(postId);
 
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                for(DataSnapshot ds: snapshot.getChildren()){
+                                for (DataSnapshot ds : snapshot.getChildren()) {
                                     ds.getRef().removeValue();//rremove values from firebbase where pId matches
 
                                 }
@@ -216,21 +257,21 @@ public class PostDetailActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@androidx.annotation.NonNull Exception e) {
                         pd.dismiss();
-                        Toast.makeText(PostDetailActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PostDetailActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
     }
 
     private void deleteWithoutImage() {
-        ProgressDialog pd= new ProgressDialog(this);
+        ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("Deleting...");
-        Query query= FirebaseDatabase.getInstance().getReference("Posts").orderByChild("pId").equalTo(postId);
+        Query query = FirebaseDatabase.getInstance().getReference("Posts").orderByChild("pId").equalTo(postId);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds: snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     ds.getRef().removeValue();//rremove values from firebbase where pId matches
 
                 }
@@ -252,12 +293,12 @@ public class PostDetailActivity extends AppCompatActivity {
         likesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if(snapshot.child(postId).hasChild(myUid)){
-                likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_liked,0,0,0);
-                   likeBtn.setText("Liked");
-                }else{
-                   likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like,0,0,0);
-                   likeBtn.setText("Like");
+                if (snapshot.child(postId).hasChild(myUid)) {
+                    likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_liked, 0, 0, 0);
+                    likeBtn.setText("Liked");
+                } else {
+                    likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like, 0, 0, 0);
+                    likeBtn.setText("Like");
                 }
             }
 
@@ -418,7 +459,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     String pDescr = "" + ds.child("pDescr").getValue();
                     pLikes = "" + ds.child("pLikes").getValue();
                     String pTimeStamp = "" + ds.child("pTime").getValue();
-                     pImage = "" + ds.child("pImage").getValue();
+                    pImage = "" + ds.child("pImage").getValue();
                     hisDp = "" + ds.child("uDp").getValue();
                     hisUid = "" + ds.child("uid").getValue();
                     String uEmail = "" + ds.child("uEmail").getValue();

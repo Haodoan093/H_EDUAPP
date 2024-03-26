@@ -73,6 +73,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/repasswordEt"
         android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:background="@drawable/bg_buttton_solib_black"
         android:layout_marginTop="20dp"
         android:text="Register" />
 

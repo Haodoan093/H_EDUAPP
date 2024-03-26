@@ -5,26 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
+    android:background="@color/white"
     tools:context=".LoginActivity">
 
     <TextView
+        android:layout_marginTop="80dp"
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
         android:text="Login"
+
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="25sp" />
 
     <EditText
+        android:background="@drawable/bg_buttton_solib_black"
         android:id="@+id/emailEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginTop="20dp"
-        android:hint="Email"
+        android:hint="   Email"
         android:minHeight="48dp" />
 
 
@@ -35,7 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/emailEt"
         android:layout_centerInParent="true"
-        android:hint="Password"
+        android:hint="   Password"
+        android:background="@drawable/bg_buttton_solib_black"
         android:minHeight="48dp"
         android:inputType="textPassword"
 
@@ -47,7 +52,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/passwordEt"
         android:layout_centerHorizontal="true"
-        android:text="Login" />
+        android:background="@drawable/bg_buttton_solib_black"
+
+        android:text="Login"
+        android:textColor="@android:color/black" />
     <!-- Forgot password-->
     <TextView
         android:id="@+id/recoverPassTv"
@@ -75,6 +83,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
         android:text="Not have account? Register"
+
         android:textAlignment="center"
         android:textColor="@color/black" />
 </RelativeLayout>
