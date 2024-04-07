@@ -91,7 +91,7 @@ public class AdapterChatlist extends  RecyclerView.Adapter<AdapterChatlist.MyHol
         }
         //set online status
 
-        if(usersList.get(position).getOnlineStatus().equals("omline")){
+        if(usersList.get(position).getOnlineStatus().equals("online")){
             holder.onlineStatusIv.setImageResource(R.drawable.circle_online);
         }else{
             holder.onlineStatusIv.setImageResource(R.drawable.circle_offline);

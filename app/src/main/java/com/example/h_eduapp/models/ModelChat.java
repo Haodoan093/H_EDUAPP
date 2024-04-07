@@ -1,7 +1,29 @@
 package com.example.h_eduapp.models;
 
 public class ModelChat {
-    String message,receiver,sender,timestamp;
+    String message;
+    String receiver;
+    String sender;
+    String timestamp;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public ModelChat(String message, String receiver, String sender, String timestamp, String type, Boolean isSeen) {
+        this.message = message;
+        this.receiver = receiver;
+        this.sender = sender;
+        this.timestamp = timestamp;
+        this.type = type;
+        this.isSeen = isSeen;
+    }
+
+    String type;
     Boolean isSeen;
 
     public ModelChat() {

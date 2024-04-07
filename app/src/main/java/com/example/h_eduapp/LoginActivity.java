@@ -247,6 +247,9 @@ public class LoginActivity extends AppCompatActivity {
                         hashMap.put("phone",""); // Đưa số điện thoại vào HashMap (ở đây bạn có thể đưa thông tin số điện thoại nếu có)
                         hashMap.put("image",""); // Đưa link hình ảnh vào HashMap (ở đây bạn có thể đưa thông tin ảnh đại diện nếu có)
                         hashMap.put("cover","");
+                        hashMap.put("studentCode","");//ma sinh vien
+                        hashMap.put("DH","");//khoa bao nhieu
+                        hashMap.put("position","");//chuc vu : hoc sinh, giao vien
                         hashMap.put("onlineStatus","online");
                         hashMap.put("typingTo","noOne");
 

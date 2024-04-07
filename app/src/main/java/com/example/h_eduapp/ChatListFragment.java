@@ -143,8 +143,14 @@ public class ChatListFragment extends Fragment {
 
                     if(chat.getReceiver().equals(currentUser.getUid() )&&chat.getSender().equals(Userid)
                     ||chat.getReceiver().equals(Userid)&&
-                    chat.getSender().equals(currentUser.getUid())){
-                            theLastMessage= chat.getMessage();
+                    chat.getSender().equals(currentUser.getUid())) {
+                        //instead of display url in message show "sent photo"
+                        if ( chat.getType().equals("image")) {
+                            theLastMessage = "Sent a photo";
+                        }
+                        else {
+                            theLastMessage = chat.getMessage();
+                        }
 
                     }
 

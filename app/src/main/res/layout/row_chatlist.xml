@@ -16,7 +16,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:src="@drawable/ic_default_img_users" />
-        <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+        <ImageView
             android:id="@+id/onlineStatusIv"
             android:layout_width="25dp"
             android:layout_height="25dp" />

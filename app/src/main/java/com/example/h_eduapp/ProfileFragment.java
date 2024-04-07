@@ -319,7 +319,7 @@ public class ProfileFragment extends Fragment {
 
     private void showEditProfileDialog() {
 
-        String options[] = {"Edit profile picture ", "Edit cover photo", "Edit name", "Edit phone"};
+        String options[] = {"Edit profile picture ", "Edit cover photo", "Edit name", "Edit phone","More"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Choose Action");
@@ -349,6 +349,11 @@ public class ProfileFragment extends Fragment {
                     pd.setMessage("Updating Phone");
                     showNamePhoneUpdateDialog("phone");
 
+                }else if (which == 4) {
+                    //Edit phone
+                    pd.setMessage("More");
+                    showInfo();
+
                 }
             }
 
@@ -356,6 +361,56 @@ public class ProfileFragment extends Fragment {
         });
         //crat and show dialog
         builder.create().show();
+    }
+
+    private void showInfo() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater inflater = getLayoutInflater();
+        //Dialog được tạo dựa trên dialog_edit_product.xml gồm:
+        //textViewMaSP, editTextTenSP, editTextSoSP, editTextGiaSP
+        View dialogView = inflater.inflate(R.layout.dialog_info_edit, null);
+        dialogBuilder.setView(dialogView);
+        final TextView edtMaSV = dialogView.findViewById(R.id.edtMaSV);
+        final EditText edtTenSV = dialogView.findViewById(R.id.edtTenSV);
+        final EditText edtLop = dialogView.findViewById(R.id.edtLop);
+        final EditText edtSDT = dialogView.findViewById(R.id.edtSDT);
+        final EditText edtChucvu = dialogView.findViewById(R.id.edtChucvu);
+        EditText edtEmail = dialogView.findViewById(R.id.edtEmail);
+        Query query = databaseReference.orderByChild("email").equalTo(user.getEmail());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //check until requiredd data get
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    //get data
+                    String name = "" + ds.child("name").getValue();
+                    String email = "" + ds.child("email").getValue();
+                    String phone = "" + ds.child("phone").getValue();
+                    String studentCode = "" + ds.child("studentCode").getValue();
+                    String position = "" + ds.child("position").getValue();
+                    String classDH = "" + ds.child("DH").getValue();
+
+                    edtMaSV.setText(studentCode);
+                    edtTenSV.setText(name);
+                    edtLop.setText(classDH);
+                    edtSDT.setText(phone);
+                    edtChucvu.setText(position);
+                    edtEmail.setText(email);
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        dialogBuilder.setNegativeButton("X", null);
+        dialogBuilder.setTitle("Thông tin cá nhân");
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
     }
 
     private void showNamePhoneUpdateDialog(String key) {

@@ -72,9 +72,20 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
         //get data
         String message = chatList.get(position).getMessage();
         String timeStamp = chatList.get(position).getTimestamp();
-
+        String type = chatList.get(position).getType();
         // Convert timestamp to dd/MM/yyyy hh:mm a format
 
+
+        if(type.equals("text")){
+            holder.messageTv.setVisibility(View.VISIBLE);
+            holder.messageIv.setVisibility(View.GONE);
+            holder.messageTv.setText(message);
+        }else{
+            holder.messageTv.setVisibility(View.GONE);
+            holder.messageIv.setVisibility(View.VISIBLE);
+
+            Picasso.get().load(message).placeholder(R.drawable.ic_image_black).into(holder.messageIv);
+        }
         String dateTime = "";
         if (timeStamp != null) {
             //convert time stamp to dd/MM/yyyy hh:mm am/pm
@@ -223,7 +234,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     class MyHolder extends RecyclerView.ViewHolder {
 
 
-        ImageView mProfileIv;
+        ImageView mProfileIv,messageIv;
         TextView timeTv, messageTv, mSeenTv;
         LinearLayout messageLayout;
 
@@ -235,7 +246,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
             timeTv = view.findViewById(R.id.timeTv);
             mSeenTv = view.findViewById(R.id.isSeenTv);
             mProfileIv = view.findViewById(R.id.profileIv);
-
+            messageIv = view.findViewById(R.id.messageIv);
             messageLayout = view.findViewById(R.id.messageLayout);
 
         }

@@ -456,6 +456,7 @@ public class AddPostActivity extends AppCompatActivity {
                                 hashMap.put("uDp", dp);
                                 hashMap.put("uEmail", email);
                                 hashMap.put("pLikes", "0");
+                                hashMap.put("pComments", "0");
                                 hashMap.put("pId", timeStamp);
                                 hashMap.put("pTitle", title);
                                 hashMap.put("pDescr", desciption);
@@ -506,6 +507,7 @@ public class AddPostActivity extends AppCompatActivity {
             hashMap.put("uName", name);
             hashMap.put("uEmail", email);
             hashMap.put("pLikes", "0");
+            hashMap.put("pComments", "0");
             hashMap.put("uDp", dp);
             hashMap.put("pId", timeStamp);
             hashMap.put("pTitle", title);
@@ -589,6 +591,34 @@ public class AddPostActivity extends AppCompatActivity {
         // Tạo và hiển thị dialog
         builder.create().show();
     }
+    private void pickFromCamera() {
+        // Kiểm tra quyền truy cập bộ nhớ
+        if (!checkStoragePermission()) {
+            requestStoragePermission();
+        } else {
+            // Intent để mở camera
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "Temp Pick");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "Temp Description");
+            image_uri = this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+            startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
+        }
+    }
+
+    private void pickFromGallery() {
+        // Kiểm tra quyền truy cập bộ nhớ
+        if (!checkStoragePermission()) {
+            requestStoragePermission();
+        } else {
+            // Intent để mở thư viện ảnh
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+            galleryIntent.setType("image/*");
+            startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
+        }
+    }
+
 
     private boolean checkStoragePermission() {
         //check if storage permission is enabled or not
@@ -667,33 +697,6 @@ public class AddPostActivity extends AppCompatActivity {
         }
     }
 
-    private void pickFromCamera() {
-        // Kiểm tra quyền truy cập bộ nhớ
-        if (!checkStoragePermission()) {
-            requestStoragePermission();
-        } else {
-            // Intent để mở camera
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Images.Media.TITLE, "Temp Pick");
-            values.put(MediaStore.Images.Media.DESCRIPTION, "Temp Description");
-            image_uri = this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
-            startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
-        }
-    }
-
-    private void pickFromGallery() {
-        // Kiểm tra quyền truy cập bộ nhớ
-        if (!checkStoragePermission()) {
-            requestStoragePermission();
-        } else {
-            // Intent để mở thư viện ảnh
-            Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-            galleryIntent.setType("image/*");
-            startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
