@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:tools="http://schemas.android.com/tools">
     <!-- Sử dụng quyền truy cập Internet -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Sử dụng quyền truy cập vào tính năng camera -->
@@ -11,6 +10,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".MyApplication"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -20,6 +20,9 @@
         android:theme="@style/Theme.H_EDUAPP"
         tools:targetApi="31">
         <activity
+            android:name=".SettinggsActivity"
+            android:exported="false" />
+        <activity
             android:name=".PostDetailActivity"
             android:exported="false" />
         <activity
@@ -27,7 +30,18 @@
             android:exported="false" />
         <activity
             android:name=".AddPostActivity"
-            android:exported="false" />
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="image/*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ChatActivity"
             android:exported="false"
@@ -52,32 +66,24 @@
         </activity>
 
         <service
-            android:name=".notifications.FirebaseService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.firebase.INTANCE_ID_SERVICE" />
-            </intent-filter>
-        </service>
-        <service
             android:name=".notifications.FirebaseMessaging"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
+                <action android:name="com.google.firebase.INTANCE_ID_SERVICE" />
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        
-        
+
+
         <provider
-            android:authorities="com.blogspot.atifsoftwares.firebaseapp.fileprovider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.blogspot.atifsoftwares.firebaseapp.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-               android:resource="@xml/paths"
-                />
+                android:resource="@xml/paths" />
         </provider>
     </application>
 

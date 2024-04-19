@@ -14,63 +14,75 @@
         android:background="#262227"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
-
-        <com.blogspot.atifsoftwares.circularimageview.CircularImageView
-            android:id="@+id/profileIv"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_default_img_users" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/nameTv"
+
+            <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+                android:id="@+id/profileIv"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_default_img_users" />
+
+            <LinearLayout
+                android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="His name"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold"
-
-                />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/onlineIndicator"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:background="@drawable/online_indicator_green" />
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/userStatusTv"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/nameTv"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_toEndOf="@id/onlineIndicator"
-                    android:layout_toRightOf="@id/onlineIndicator"
-                    android:text="Online"
+                    android:text="His name"
                     android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </RelativeLayout>
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/onlineIndicator"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/online_indicator_green" />
+
+                    <TextView
+                        android:id="@+id/userStatusTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_toEndOf="@id/onlineIndicator"
+                        android:layout_toRightOf="@id/onlineIndicator"
+                        android:text="Online"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/blockIv"
+                android:layout_marginEnd="5dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_unblock"/>
         </LinearLayout>
-
-
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView

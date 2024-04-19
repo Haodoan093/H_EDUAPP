@@ -106,6 +106,15 @@ public class DashboardActivity extends AppCompatActivity {
                         ft4.replace(R.id.content, fragment4, "");
                         ft4.commit();
                         return true;
+
+                    } else if (item.getItemId() == R.id.nav_notification) {
+                        // Xử lý khi người dùng chọn mục Users
+                        actionBar.setTitle("Notifications");
+                        NtificationsFragment fragment5 = new NtificationsFragment();
+                        FragmentTransaction ft5 = getSupportFragmentManager().beginTransaction();
+                        ft5.replace(R.id.content, fragment5, "");
+                        ft5.commit();
+                        return true;
                     }
                     return false;
                 }
@@ -117,11 +126,11 @@ public class DashboardActivity extends AppCompatActivity {
         if (user != null) {
 
             // Người dùng đã đăng nhập
-            mUid= user.getUid();
+            mUid = user.getUid();
 //save uid of currently signed in userr in shared preferences
-            SharedPreferences sp = getSharedPreferences("SP_USER",MODE_PRIVATE);
-            SharedPreferences.Editor editor= sp.edit();
-            editor.putString("Current_USERID",mUid);
+            SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("Current_USERID", mUid);
             editor.apply();
 
 

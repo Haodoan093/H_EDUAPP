@@ -3,11 +3,11 @@ buildscript {
         google() // Thêm repo của Google để tải dependencies
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.1' // Thêm phiên bản của plugin Android Gradle
+        classpath 'com.android.tools.build:gradle:8.3.2' // Thêm phiên bản của plugin Android Gradle
         classpath 'com.google.gms:google-services:4.4.1' // Thêm phiên bản của plugin Google Services
     }
 }
 
 plugins {
-    id 'com.android.application' version '8.2.1' apply false // Áp dụng plugin Android Gradle nhưng không tự động áp dụng nó
+    id 'com.android.application' version '8.3.2' apply false // Áp dụng plugin Android Gradle nhưng không tự động áp dụng nó
 }

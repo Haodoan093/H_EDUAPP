@@ -166,6 +166,33 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
     }
+    private void addToHisNotifications(String hisUid, String pId, String notification) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("pId", pId);
+        hashMap.put("timestamp", timestamp);
+        hashMap.put("pUid", hisUid);
+        hashMap.put("notification", notification);
+        hashMap.put("sUid", myUid);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(hisUid).child("Notifications").child(timestamp)
+                .setValue(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        // Thêm mã xử lý tại đây nếu cần
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Xử lý trường hợp thất bại khi thêm dữ liệu vào Firebase Database
+                    }
+                });
+    }
+
     private void shareImageAndText(String pTitle, String pDescription, Bitmap bitmap) {
         String shareBody = pTitle + "\n" + pDescription;
 
@@ -406,6 +433,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         mProcessLike = false;
                      /*   likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_liked,0,0,0);
                         likeBtn.setText("Liked");*/
+                        addToHisNotifications(""+hisDp,""+postId,"Liked your posts");
                     }
                 }
             }
@@ -453,6 +481,8 @@ public class PostDetailActivity extends AppCompatActivity {
                         Toast.makeText(PostDetailActivity.this, "Coomment Added...", Toast.LENGTH_SHORT).show();
                         commentEt.setText("");
                         updateCommentCount();
+
+                        addToHisNotifications(""+hisDp,""+postId,"Commented on your posts");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

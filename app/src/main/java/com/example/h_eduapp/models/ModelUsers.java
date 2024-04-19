@@ -3,108 +3,9 @@ package com.example.h_eduapp.models;
 public class ModelUsers {
 
     // Use the same names as in the Firebase database
-    String name, email, search, phone, image, cover,uid,onlineStatus,typingTo,studentCode,DH,position;//adding two more fiields
+    String name, email, search, phone, image, cover, uid, onlineStatus, typingTo, studentCode, DH, position;//adding two more fiields
+    boolean isBlocked = false;
 
-    public String getStudentCode() {
-        return studentCode;
-    }
-
-    public void setStudentCode(String studentCode) {
-        this.studentCode = studentCode;
-    }
-
-    public String getDH() {
-        return DH;
-    }
-
-    public void setDH(String DH) {
-        this.DH = DH;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public ModelUsers(String name, String email, String search, String phone, String image, String cover, String uid, String onlineStatus, String typingTo, String studentCode, String DH, String position) {
-        this.name = name;
-        this.email = email;
-        this.search = search;
-        this.phone = phone;
-        this.image = image;
-        this.cover = cover;
-        this.uid = uid;
-        this.onlineStatus = onlineStatus;
-        this.typingTo = typingTo;
-        this.studentCode = studentCode;
-        this.DH = DH;
-        this.position = position;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getOnlineStatus() {
-        return onlineStatus;
-    }
-
-    public void setOnlineStatus(String onlineStatus) {
-        this.onlineStatus = onlineStatus;
-    }
-
-    public String getTypingTo() {
-        return typingTo;
-    }
-
-    public void setTypingTo(String typingTo) {
-        this.typingTo = typingTo;
-    }
-
-    public ModelUsers(String name, String email, String search, String phone, String image, String cover, String uid, String onlineStatus, String typingTo) {
-        this.name = name;
-        this.email = email;
-        this.search = search;
-        this.phone = phone;
-        this.image = image;
-        this.cover = cover;
-        this.uid = uid;
-        this.onlineStatus = onlineStatus;
-        this.typingTo = typingTo;
-    }
-
-    public ModelUsers(String name, String email, String search, String phone, String image, String cover, String uid) {
-        this.name = name;
-        this.email = email;
-        this.search = search;
-        this.phone = phone;
-        this.image = image;
-        this.cover = cover;
-        this.uid = uid;
-    }
-
-    // Empty constructor (required by Firebase)
-    public ModelUsers() {
-    }
-
-    // Constructor with parameters
-    public ModelUsers(String name, String email, String search, String phone, String image, String cover) {
-        this.name = name;
-        this.email = email;
-        this.search = search;
-        this.phone = phone;
-        this.image = image;
-        this.cover = cover;
-    }
-
-    // Getter and setter methods
     public String getName() {
         return name;
     }
@@ -151,5 +52,80 @@ public class ModelUsers {
 
     public void setCover(String cover) {
         this.cover = cover;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(String onlineStatus) {
+        this.onlineStatus = onlineStatus;
+    }
+
+    public String getTypingTo() {
+        return typingTo;
+    }
+
+    public void setTypingTo(String typingTo) {
+        this.typingTo = typingTo;
+    }
+
+    public String getStudentCode() {
+        return studentCode;
+    }
+
+    public void setStudentCode(String studentCode) {
+        this.studentCode = studentCode;
+    }
+
+    public String getDH() {
+        return DH;
+    }
+
+    public void setDH(String DH) {
+        this.DH = DH;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
+
+    public ModelUsers() {
+    }
+
+    public ModelUsers(String name, String email, String search, String phone, String image, String cover, String uid, String onlineStatus, String typingTo, String studentCode, String DH, String position, boolean isBlocked) {
+        this.name = name;
+        this.email = email;
+        this.search = search;
+        this.phone = phone;
+        this.image = image;
+        this.cover = cover;
+        this.uid = uid;
+        this.onlineStatus = onlineStatus;
+        this.typingTo = typingTo;
+        this.studentCode = studentCode;
+        this.DH = DH;
+        this.position = position;
+        this.isBlocked = isBlocked;
     }
 }

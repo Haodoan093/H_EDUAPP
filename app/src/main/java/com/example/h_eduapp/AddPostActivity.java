@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -44,8 +50,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AddPostActivity extends AppCompatActivity {
     ActionBar actionBar;
@@ -68,7 +78,7 @@ public class AddPostActivity extends AppCompatActivity {
     //user info
     String name, email, uid, dp;
 
-    String editPostId,editPostImage;
+    String editPostId, editPostImage;
     ProgressDialog pd;
     boolean isUserDataReady = false;
 
@@ -107,8 +117,15 @@ public class AddPostActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String isUpdateKey = "" + intent.getStringExtra("key");
         editPostId = "" + intent.getStringExtra("editPostId");
-        editPostImage="" + intent.getStringExtra("editPostImage");
-
+        editPostImage = "" + intent.getStringExtra("editPostImage");
+//get d
+        String action = intent.getAction();
+        String type = intent.getType();
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            handSendText(intent);
+        } else {
+            handSendImage(intent);
+        }
 
         if (isUpdateKey.equals("editPost")) {
             actionBar.setTitle("Update Post");
@@ -190,6 +207,22 @@ public class AddPostActivity extends AppCompatActivity {
 
     }
 
+    private void handSendImage(Intent intent) {
+             Uri imageUri=(Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+             if(imageUri!=null){
+                 image_uri=imageUri;
+
+                 imageIv.setImageURI(imageUri);
+             }
+    }
+
+    private void handSendText(Intent intent) {
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText != null) {
+            descriptionEt.setText(sharedText);
+        }
+    }
+
 
     private void beginUpdate(String title, String desciption, String editPostId) {
 
@@ -200,10 +233,9 @@ public class AddPostActivity extends AppCompatActivity {
         if (!editImage.equals("noImage")) {
             //without image
             updateWasWithImage(title, desciption, editPostId);
-        } else if(imageIv.getDrawable()!=null){
+        } else if (imageIv.getDrawable() != null) {
             updateWithNowImage(title, desciption, editPostId);
-        }
-        else {
+        } else {
             //withoud image
             updateWithoutImage(title, desciption, editPostId);
         }
@@ -478,6 +510,14 @@ public class AddPostActivity extends AppCompatActivity {
                                                 descriptionEt.setText("");
                                                 imageIv.setImageURI(null);
                                                 image_uri = null;
+                                                //send notification
+                                                prepareNotification(
+                                                        "" + timeStamp,
+                                                        "" + name + "added new post",
+                                                        "" + title + "\n" + desciption,
+                                                        "PostNotification",
+                                                        "POST"
+                                                );
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -530,7 +570,14 @@ public class AddPostActivity extends AppCompatActivity {
                             descriptionEt.setText("");
                             imageIv.setImageURI(null);
                             image_uri = null;
-
+                            //send notification
+                            prepareNotification(
+                                    "" + timeStamp,
+                                    "" + name + "added new post",
+                                    "" + title + "\n" + desciption,
+                                    "PostNotification",
+                                    "POST"
+                            );
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -591,6 +638,7 @@ public class AddPostActivity extends AppCompatActivity {
         // Tạo và hiển thị dialog
         builder.create().show();
     }
+
     private void pickFromCamera() {
         // Kiểm tra quyền truy cập bộ nhớ
         if (!checkStoragePermission()) {
@@ -697,6 +745,68 @@ public class AddPostActivity extends AppCompatActivity {
         }
     }
 
+    private void prepareNotification(String pId, String title, String description, String nofiticationType, String nofiticationTopic) {
+
+        String NOTIFICATION_TOPIC = "/topics/" + nofiticationTopic;
+        String NOTIFICATION_TITLE = title;
+
+        String NOTIFICATION_MESSAGE = description;
+        String NOTIFICATION_TYPE = nofiticationType;
+
+
+        ///prepare jsonwhat to send and where to send
+
+        JSONObject notificcationJo = new JSONObject();
+        JSONObject notificcationBodyJo = new JSONObject();
+
+        try {
+            //what to send
+            notificcationBodyJo.put("nofiticationType", NOTIFICATION_TYPE);
+            notificcationBodyJo.put("sender", uid);
+
+            notificcationBodyJo.put("pId", pId);
+
+            notificcationBodyJo.put("pTitle", NOTIFICATION_TITLE);
+            notificcationBodyJo.put("pDescription", NOTIFICATION_MESSAGE);
+
+            //where to send
+            notificcationJo.put("to", NOTIFICATION_TOPIC);
+            notificcationJo.put("data", notificcationBodyJo);
+
+
+        } catch (JSONException ex) {
+            Toast.makeText(this, "" + ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        sendPostNotification(notificcationJo);
+
+    }
+
+    private void sendPostNotification(JSONObject notificcationJo) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificcationJo,
+
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("FCM_RESPONSE", "onResponse: " + response.toString());
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(AddPostActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                //put required headers
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "key=AAAA_3xU70w:APA91bFHhr6DmJ9BTQFFucefE6Qg_1ILBpt_IvtAr670YWoLV-MR3bOYgtr6VxL3fRQahHQsEkTjDzdAq98YT42gbZ1V5i4kgORjKmjn6-ujpNLufmNzbPhob3npHx_VajUfw5lkLk_-");
+                return headers;
+            }
+        };
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

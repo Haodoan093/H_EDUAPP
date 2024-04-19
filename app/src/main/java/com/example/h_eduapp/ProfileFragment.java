@@ -124,7 +124,7 @@ public class ProfileFragment extends Fragment {
         //init firebase
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
-        postlist= new ArrayList<>();
+        postlist = new ArrayList<>();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Users");
 
@@ -211,28 +211,28 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadMyPosts() {
-        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
 
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
 
         postRecyclerview.setLayoutManager(linearLayoutManager);
 
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Posts");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
 
-        Query query= ref.orderByChild("uid").equalTo(uid);
+        Query query = ref.orderByChild("uid").equalTo(uid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postlist.clear();
-                for(DataSnapshot ds: snapshot.getChildren()){
-                    ModelPoost modelPoost= ds.getValue(ModelPoost.class);
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    ModelPoost modelPoost = ds.getValue(ModelPoost.class);
 
                     postlist.add(modelPoost);
 
 
-                    adapterPosts= new AdapterPosts(getActivity(),postlist);
+                    adapterPosts = new AdapterPosts(getActivity(), postlist);
 
                     postRecyclerview.setAdapter(adapterPosts);
 
@@ -241,39 +241,39 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
+
     private void searchMyPosts(String searchQuery) {
-        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
 
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
 
         postRecyclerview.setLayoutManager(linearLayoutManager);
 
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Posts");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
 
-        Query query= ref.orderByChild("uid").equalTo(uid);
+        Query query = ref.orderByChild("uid").equalTo(uid);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postlist.clear();
-                for(DataSnapshot ds: snapshot.getChildren()){
-                    ModelPoost mypost= ds.getValue(ModelPoost.class);
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    ModelPoost mypost = ds.getValue(ModelPoost.class);
 
 
-                    if(mypost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase())||
-                    mypost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
+                    if (mypost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) ||
+                            mypost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())) {
                         postlist.add(mypost);
                     }
 
 
-
-                    adapterPosts= new AdapterPosts(getActivity(),postlist);
+                    adapterPosts = new AdapterPosts(getActivity(), postlist);
 
                     postRecyclerview.setAdapter(adapterPosts);
 
@@ -282,7 +282,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -319,7 +319,7 @@ public class ProfileFragment extends Fragment {
 
     private void showEditProfileDialog() {
 
-        String options[] = {"Edit profile picture ", "Edit cover photo", "Edit name", "Edit phone","More"};
+        String options[] = {"Edit profile picture ", "Edit cover photo", "Edit name", "Edit phone", "More"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Choose Action");
@@ -349,7 +349,7 @@ public class ProfileFragment extends Fragment {
                     pd.setMessage("Updating Phone");
                     showNamePhoneUpdateDialog("phone");
 
-                }else if (which == 4) {
+                } else if (which == 4) {
                     //Edit phone
                     pd.setMessage("More");
                     showInfo();
@@ -455,13 +455,13 @@ public class ProfileFragment extends Fragment {
                                 }
                             });
                     //if user edit his name , also change it from hist posts
-                    if(key.equals("name")){
-                        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Posts");
+                    if (key.equals("name")) {
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
                         Query query = ref.orderByChild("uid").equalTo(uid);
                         query.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot ds :snapshot.getChildren()){
+                                for (DataSnapshot ds : snapshot.getChildren()) {
                                     String child = ds.getKey();
                                     snapshot.getRef().child(child).child("uName").setValue(value);
                                 }
@@ -477,18 +477,18 @@ public class ProfileFragment extends Fragment {
                         ref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for(DataSnapshot ds: snapshot.getChildren()){
-                                    String child= ds.getKey();
-                                    if(snapshot.child(child).hasChild("Comments")){
-                                        String child1=""+snapshot.child(child).getKey();
-                                        Query child2=FirebaseDatabase.getInstance().getReference("Posts")
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    String child = ds.getKey();
+                                    if (snapshot.child(child).hasChild("Comments")) {
+                                        String child1 = "" + snapshot.child(child).getKey();
+                                        Query child2 = FirebaseDatabase.getInstance().getReference("Posts")
                                                 .child(child1).child("Comments").orderByChild("uid")
                                                 .equalTo(uid);
                                         child2.addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                for(DataSnapshot ds: snapshot.getChildren()){
-                                                    String child= ds.getKey();
+                                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                                    String child = ds.getKey();
                                                     snapshot.getRef().child(child).child("uName").setValue(value);
                                                 }
                                             }
@@ -662,13 +662,13 @@ public class ProfileFragment extends Fragment {
                                                     Toast.makeText(getActivity(), "Error Updating Image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             });
-                                    if(profileOrCoverPhoto.equals("image")){
-                                        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Posts");
+                                    if (profileOrCoverPhoto.equals("image")) {
+                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
                                         Query query = ref.orderByChild("uid").equalTo(uid);
                                         query.addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                for (DataSnapshot ds :snapshot.getChildren()){
+                                                for (DataSnapshot ds : snapshot.getChildren()) {
                                                     String child = ds.getKey();
                                                     snapshot.getRef().child(child).child("uDp").setValue(downloadUri.toString());
                                                 }
@@ -685,18 +685,18 @@ public class ProfileFragment extends Fragment {
                                         ref.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                for(DataSnapshot ds: snapshot.getChildren()){
-                                                    String child= ds.getKey();
-                                                    if(snapshot.child(child).hasChild("Comments")){
-                                                        String child1=""+snapshot.child(child).getKey();
-                                                        Query child2=FirebaseDatabase.getInstance().getReference("Posts")
+                                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                                    String child = ds.getKey();
+                                                    if (snapshot.child(child).hasChild("Comments")) {
+                                                        String child1 = "" + snapshot.child(child).getKey();
+                                                        Query child2 = FirebaseDatabase.getInstance().getReference("Posts")
                                                                 .child(child1).child("Comments").orderByChild("uid")
                                                                 .equalTo(uid);
                                                         child2.addValueEventListener(new ValueEventListener() {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                for(DataSnapshot ds: snapshot.getChildren()){
-                                                                    String child= ds.getKey();
+                                                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                                                    String child = ds.getKey();
                                                                     snapshot.getRef().child(child).child("uDp").setValue(downloadUri.toString());
                                                                 }
                                                             }
@@ -778,15 +778,15 @@ public class ProfileFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.menu_main, menu);
 
-        MenuItem item= menu.findItem(R.id.action_search);
-        SearchView searchView= (SearchView) MenuItemCompat.getActionView(item);
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 //goi khi search
-                if(!TextUtils.isEmpty(s)){
+                if (!TextUtils.isEmpty(s)) {
                     searchMyPosts(s);
-                }else{
+                } else {
                     loadMyPosts();
                 }
                 return false;
@@ -795,9 +795,9 @@ public class ProfileFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String s) {
                 // goi khi khong tim kiem
-                if(!TextUtils.isEmpty(s)){
+                if (!TextUtils.isEmpty(s)) {
                     searchMyPosts(s);
-                }else{
+                } else {
                     loadMyPosts();
                 }
                 return false;
@@ -812,9 +812,11 @@ public class ProfileFragment extends Fragment {
         if (id == R.id.action_logout) {
             firebaseAuth.signOut();
             checkUserStatus();
-        }
-        if (id == R.id.action_addpost) {
+        } else if (id == R.id.action_addpost) {
             startActivity(new Intent(getActivity(), AddPostActivity.class));
+        } else if (id == R.id.action_settings) {
+            //go to settinggs activity
+            startActivity((new Intent(getActivity(), SettinggsActivity.class)));
         }
         return super.onOptionsItemSelected(item);
     }

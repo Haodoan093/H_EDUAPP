@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="2dp"
     app:cardElevation="2dp"
@@ -15,15 +15,12 @@
         android:orientation="horizontal">
 
         <com.blogspot.atifsoftwares.circularimageview.CircularImageView
-            android:id="@+id/avatarIv"
+            android:id="@+id/avataIv"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/ic_default_img_users">
-
-        </com.blogspot.atifsoftwares.circularimageview.CircularImageView>
+            android:src="@drawable/ic_notification" />
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -32,23 +29,27 @@
                 android:id="@+id/nameTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Person name"
+                android:text="Name"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/emailTv"
+                android:id="@+id/notificationTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Person email"
+                android:text="Notification"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/timeTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Time"
                 android:textColor="@color/black" />
 
         </LinearLayout>
-        <ImageView
-            android:id="@+id/blockIv"
-            android:layout_gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_unblock"/>
+
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

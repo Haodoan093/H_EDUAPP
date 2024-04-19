@@ -2,11 +2,28 @@ package com.example.h_eduapp.notifications;
 
 public class Data {
 
-    private String user,body, titile, sent;
+    private String user,body, titile, sent,notificationType;
 
     private Integer icon;
 
     public Data() {
+    }
+
+    public Data(String user, String body, String titile, String sent, String notificationType, Integer icon) {
+        this.user = user;
+        this.body = body;
+        this.titile = titile;
+        this.sent = sent;
+        this.notificationType = notificationType;
+        this.icon = icon;
+    }
+
+    public String getNotificationType() {
+        return notificationType;
+    }
+
+    public void setNotificationType(String notificationType) {
+        this.notificationType = notificationType;
     }
 
     public Data(String user, String body, String titile, String sent, Integer icon) {

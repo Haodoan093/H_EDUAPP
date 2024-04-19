@@ -90,7 +90,10 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                if (getActivity() != null) {
+                    Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
@@ -171,8 +174,12 @@ public class HomeFragment extends Fragment {
             firebaseAuth.signOut();
             checkUserStatus();
         }
-        if (id == R.id.action_addpost) {
+       else  if (id == R.id.action_addpost) {
          startActivity(new Intent(getActivity(), AddPostActivity.class));
+        }
+        else if (id==R.id.action_settings) {
+            //go to settinggs activity
+            startActivity((new Intent(getActivity(), SettinggsActivity.class)));
         }
         return super.onOptionsItemSelected(item);
     }

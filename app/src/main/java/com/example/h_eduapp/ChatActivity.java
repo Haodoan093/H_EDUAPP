@@ -40,6 +40,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.h_eduapp.adapters.AdapterChat;
+import com.example.h_eduapp.adapters.AdapterUsers;
 import com.example.h_eduapp.models.ModelChat;
 import com.example.h_eduapp.models.ModelUsers;
 import com.example.h_eduapp.notifications.Data;
@@ -81,13 +82,13 @@ public class ChatActivity extends AppCompatActivity {
     //views from xml
     Toolbar toolbar;
     RecyclerView recyclerView;
-    ImageView profileIv;
+    ImageView profileIv,blockIv;
     TextView nameTv, userStatusTv;
 
     EditText messageEt;
     ImageButton sendBtn, attachBtn;
     FirebaseAuth firebaseAuth;
-
+boolean isBlocked=false;
     String hisUid;
     String myUid;
     String hisImage;
@@ -140,6 +141,7 @@ public class ChatActivity extends AppCompatActivity {
         sendBtn = findViewById(R.id.sendBtn);
         profileIv = findViewById(R.id.profileIv);
         onlineIndicator = findViewById(R.id.onlineIndicator);
+        blockIv = findViewById(R.id.blockIv);
 
         attachBtn = findViewById(R.id.attachBtn);
 
@@ -305,12 +307,100 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+        blockIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isBlocked) {
+                    unBlockUser();
+                } else {
+                    blockUser();
+                }
+            }
+        });
+        checkIsBlocked();
         checkUserStatus();
         readMessage();
         seenMessage();
 
 
     }
+    private void checkIsBlocked() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(firebaseAuth.getUid()).child("BlockedUsers")
+                .orderByChild("uid").equalTo(hisUid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            if (ds.exists()) {
+                                blockIv.setImageResource(R.drawable.ic_block_red);
+                              isBlocked=true;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void unBlockUser() {
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(myUid).child("BlockedUsers")
+                .orderByChild("uid").equalTo(hisUid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            if (ds.exists()) {
+                                ds.getRef().removeValue()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Toast.makeText(ChatActivity.this, "unblocked Successfully...", Toast.LENGTH_SHORT).show();
+                                                blockIv.setImageResource(R.drawable.ic_unblock);
+                                            }
+                                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Toast.makeText(ChatActivity.this, "Failed..", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void blockUser() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("uid", hisUid);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(myUid).child("BlockedUsers")
+                .child(hisUid).setValue(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(ChatActivity.this, "Blocked...", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(ChatActivity.this, "Failed...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
 
     private String getTimeAgo(long timeDifference) {
         // Convert milliseconds to minutes
@@ -599,8 +689,13 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Token token = ds.getValue(Token.class);
-                    Data data = new Data(myUid, name + " : " + message, "New Message", hisUid
-                            , R.drawable.ic_default_img_users
+                    Data data = new Data(""+myUid
+                            , ""+name + " : " + message,
+                            "New Message",
+                            ""+hisUid
+                            , "ChatNotification",
+                            R.drawable.ic_default_img_users
+
                     );
                     Sender sender = new Sender(data, token.getToken());
 
