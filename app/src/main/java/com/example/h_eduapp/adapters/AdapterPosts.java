@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.h_eduapp.AddPostActivity;
 import com.example.h_eduapp.PostDetailActivity;
+import com.example.h_eduapp.PostLikeByActivity;
 import com.example.h_eduapp.R;
 import com.example.h_eduapp.ThereProfileActivity;
 import com.example.h_eduapp.models.ModelChat;
@@ -219,6 +220,15 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
 
                 intent.putExtra("uid", uid);
 
+                context.startActivity(intent);
+            }
+        });
+
+        holder.pLikesTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(context, PostLikeByActivity.class);
+                intent.putExtra("postId",pId);
                 context.startActivity(intent);
             }
         });

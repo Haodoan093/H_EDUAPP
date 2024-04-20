@@ -9,8 +9,8 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
-        android:allowBackup="true"
         android:name=".MyApplication"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.H_EDUAPP"
         tools:targetApi="31">
+        <activity
+            android:name=".PostLikeByActivity"
+            android:exported="false" />
         <activity
             android:name=".SettinggsActivity"
             android:exported="false" />
@@ -30,16 +33,20 @@
             android:exported="false" />
         <activity
             android:name=".AddPostActivity"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="image/*"/>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <activity
@@ -74,7 +81,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
 
         <provider
             android:name="androidx.core.content.FileProvider"
