@@ -20,37 +20,54 @@
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="25sp" />
-
-    <EditText
-        android:background="@drawable/bg_buttton_solib_black"
-        android:id="@+id/emailEt"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="20dp"
-        android:hint="   Email"
-        android:minHeight="48dp" />
+        android:id="@+id/emailTIL"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+        <EditText
+            android:background="@drawable/bg_buttton_solib_black"
+            android:id="@+id/emailEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="20dp"
+            android:hint="   Email"
+            android:minHeight="48dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 
+<com.google.android.material.textfield.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/emailTIL"
+    android:layout_centerHorizontal="true"
+    android:id="@+id/passwordTIL"
+    app:passwordToggleEnabled="true"
+    android:layout_centerVertical="true">
     <EditText
 
         android:id="@+id/passwordEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/emailEt"
-        android:layout_centerInParent="true"
-        android:hint="   Password"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="-2dp"
         android:background="@drawable/bg_buttton_solib_black"
-        android:minHeight="48dp"
-        android:inputType="textPassword"
+        android:hint="   Password"
 
-        app:passwordToggleEnabled="true" />
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+      />
+</com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/passwordEt"
+        android:layout_below="@+id/passwordTIL"
         android:layout_centerHorizontal="true"
         android:background="@drawable/bg_buttton_solib_black"
 

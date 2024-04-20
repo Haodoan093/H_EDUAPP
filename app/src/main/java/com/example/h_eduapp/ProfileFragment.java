@@ -4,6 +4,9 @@ import static android.app.Activity.RESULT_OK;
 
 import com.example.h_eduapp.adapters.AdapterPosts;
 import com.example.h_eduapp.models.ModelPoost;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 
 import android.app.AlertDialog;
@@ -34,6 +37,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -319,7 +323,7 @@ public class ProfileFragment extends Fragment {
 
     private void showEditProfileDialog() {
 
-        String options[] = {"Edit profile picture ", "Edit cover photo", "Edit name", "Edit phone", "More"};
+        String options[] = {"Edit profile picture ", "Edit cover photo", "Edit name", "Edit phone","Change password", "More"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Choose Action");
@@ -351,6 +355,11 @@ public class ProfileFragment extends Fragment {
 
                 } else if (which == 4) {
                     //Edit phone
+                    pd.setMessage("Changing password");
+                    showChangePasswordDialog();
+
+                } else if (which == 5) {
+                    //Edit phone
                     pd.setMessage("More");
                     showInfo();
 
@@ -361,6 +370,73 @@ public class ProfileFragment extends Fragment {
         });
         //crat and show dialog
         builder.create().show();
+    }
+
+    private void showChangePasswordDialog() {
+        View view= LayoutInflater.from(getActivity()).inflate(R.layout.dialog_update_password,null);
+        final EditText passwordEt= view.findViewById(R.id.passwordEt);
+        final EditText newPasswordEt= view.findViewById(R.id.newPasswordEt);
+        Button updatePasswordBtn=view.findViewById(R.id.updatePasswordBtn);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(view);
+
+        AlertDialog dialog= builder.create();
+        dialog.show();
+
+
+        updatePasswordBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String oldPassword= passwordEt.getText().toString().trim();
+                String newPassword=newPasswordEt.getText().toString().trim();
+
+                if(TextUtils.isEmpty(oldPassword)){
+                    Toast.makeText(getActivity(), "Enter your current password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(newPassword.length()<6){
+                    Toast.makeText(getActivity(), "Password length must atleast o characters...", Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+                dialog.dismiss();
+                updatePassword(oldPassword,newPassword);
+            }
+        });
+    }
+
+    private void updatePassword(String oldPassword, String newPassword) {
+pd.show();
+
+final FirebaseUser user1= firebaseAuth.getCurrentUser();
+        AuthCredential authCredential= EmailAuthProvider.getCredential(user1.getEmail(),oldPassword);
+        user1.reauthenticate(authCredential)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        user1.updatePassword(newPassword)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        pd.dismiss();
+                                        Toast.makeText(getActivity(), "password updated", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        pd.dismiss();
+                                        Toast.makeText(getActivity(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        pd.dismiss();
+                        Toast.makeText(getActivity(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void showInfo() {

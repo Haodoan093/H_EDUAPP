@@ -18,65 +18,97 @@
         android:textColor="@color/colorBlack"
         android:textSize="25sp" />
 
-    <EditText
-        android:id="@+id/emailEt"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailTIL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textView"
-        android:layout_marginTop="20dp"
-        android:hint="Email"
-        android:minHeight="48dp" />
+        android:layout_marginTop="20dp">
 
-    <EditText
-        android:id="@+id/nameEt"
+        <EditText
+            android:id="@+id/emailEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:minHeight="48dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameTIL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/emailEt"
-        android:layout_marginTop="20dp"
-        android:hint="Name"
-        android:minHeight="48dp" />
+        android:layout_below="@id/emailTIL"
+        android:layout_marginTop="20dp">
 
-    <EditText
-        android:id="@+id/phoneEt"
+        <EditText
+            android:id="@+id/nameEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:minHeight="48dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/phoneTIL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/nameEt"
-        android:layout_marginTop="20dp"
-        android:hint="Phone"
-        android:minHeight="48dp" />
+        android:layout_below="@id/nameTIL"
+        android:layout_marginTop="20dp">
 
-    <EditText
-        android:id="@+id/passwordEt"
+        <EditText
+            android:id="@+id/phoneEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Phone"
+            android:minHeight="48dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordTIL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/phoneEt"
-        android:layout_marginTop="20dp"
-        android:hint="Password"
-        android:minHeight="48dp"
-        android:inputType="textPassword"
-        app:passwordToggleEnabled="true" />
+        android:layout_below="@id/phoneTIL"
+        app:passwordToggleEnabled="true"
+        android:layout_marginTop="20dp">
 
-    <EditText
-        android:id="@+id/repasswordEt"
+        <EditText
+            android:id="@+id/passwordEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+             />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/repasswordTIL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/passwordEt"
-        android:layout_marginTop="20dp"
-        android:hint="Confirm Password"
-        android:minHeight="48dp"
-        android:inputType="textPassword"
-        app:passwordToggleEnabled="true" />
+        android:layout_below="@id/passwordTIL"
+        app:passwordToggleEnabled="true"
+        android:layout_marginTop="20dp">
+
+        <EditText
+            android:id="@+id/repasswordEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/repasswordEt"
+        android:layout_below="@id/repasswordTIL"
         android:layout_centerHorizontal="true"
-        android:textColor="@android:color/black"
-        android:background="@drawable/bg_buttton_solib_black"
         android:layout_marginTop="20dp"
-        android:text="Register" />
+        android:background="@drawable/bg_buttton_solib_black"
+        android:text="Register"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/have_accountTv"
