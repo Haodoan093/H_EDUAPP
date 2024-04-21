@@ -90,6 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/chatLayout"
+
         android:layout_below="@+id/toolbar" />
     <!--    send message edit text and button in layout-->
     <LinearLayout

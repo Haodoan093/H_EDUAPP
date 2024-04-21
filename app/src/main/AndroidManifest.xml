@@ -20,6 +20,10 @@
         android:theme="@style/Theme.H_EDUAPP"
         tools:targetApi="31">
         <activity
+            android:name=".GroupChatActivity"
+            android:theme="@style/AppThemeNo"
+            android:exported="false" />
+        <activity
             android:name=".GroupCreateActivity"
             android:exported="false" />
         <activity

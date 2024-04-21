@@ -1,6 +1,7 @@
 package com.example.h_eduapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.h_eduapp.GroupChatActivity;
 import com.example.h_eduapp.R;
 import com.example.h_eduapp.models.ModelGroupChatList;
 import com.squareup.picasso.Picasso;
@@ -55,7 +57,10 @@ public class AdapterGroupChatList extends RecyclerView.Adapter<AdapterGroupChatL
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                        //opeen group chat
+                Intent intent= new Intent(context, GroupChatActivity.class);
+                intent.putExtra("groupId",groupId);
+                context.startActivity(intent);
             }
         });
     }
