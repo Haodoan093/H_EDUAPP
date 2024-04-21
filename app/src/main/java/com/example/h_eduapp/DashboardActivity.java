@@ -9,7 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.PopupMenu;
 
 
 import com.example.h_eduapp.fragments.ChatListFragment;
@@ -32,7 +35,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     ActionBar actionBar;
     String mUid;
-
+    BottomNavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +46,7 @@ public class DashboardActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
         actionBar.setTitle("Profile");
 
-        BottomNavigationView navigationView = findViewById(R.id.navigation);
+         navigationView = findViewById(R.id.navigation);
 
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
         //dat mac dinh
@@ -111,19 +114,50 @@ public class DashboardActivity extends AppCompatActivity {
                         ft4.commit();
                         return true;
 
-                    } else if (item.getItemId() == R.id.nav_notification) {
+                    } else if (item.getItemId() == R.id.nav_more) {
                         // Xử lý khi người dùng chọn mục Users
-                        actionBar.setTitle("Notifications");
-                        NtificationsFragment fragment5 = new NtificationsFragment();
-                        FragmentTransaction ft5 = getSupportFragmentManager().beginTransaction();
-                        ft5.replace(R.id.content, fragment5, "");
-                        ft5.commit();
+                        showMoreOptions();
                         return true;
                     }
                     return false;
                 }
             };
 
+    private void showMoreOptions() {
+
+
+        PopupMenu popupMenu = new PopupMenu(this, navigationView, Gravity.END);
+
+        popupMenu.getMenu().add(Menu.NONE, 0, 0, "Notifications");
+
+
+        popupMenu.getMenu().add(Menu.NONE, 1, 1, "Groups chats");
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == 0) {
+                    actionBar.setTitle("Notifications");
+                    NtificationsFragment fragment5 = new NtificationsFragment();
+                    FragmentTransaction ft5 = getSupportFragmentManager().beginTransaction();
+                    ft5.replace(R.id.content, fragment5, "");
+                    ft5.commit();
+                } else if (id == 1) {
+                    actionBar.setTitle("Group chats");
+                    GroupChatsFragment fragment6 = new GroupChatsFragment();
+                    FragmentTransaction ft6 = getSupportFragmentManager().beginTransaction();
+                    ft6.replace(R.id.content, fragment6, "");
+                    ft6.commit();
+                }
+
+
+                return false;
+            }
+        });
+        popupMenu.show();
+
+    }
 
     private void checkUserStatus() {
         FirebaseUser user = firebaseAuth.getCurrentUser();
