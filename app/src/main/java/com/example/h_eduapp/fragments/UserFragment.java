@@ -1,4 +1,4 @@
-package com.example.h_eduapp;
+package com.example.h_eduapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import com.example.h_eduapp.GroupCreateActivity;
+import com.example.h_eduapp.MainActivity;
+import com.example.h_eduapp.R;
+import com.example.h_eduapp.SettinggsActivity;
 import com.example.h_eduapp.adapters.AdapterUsers;
 import com.example.h_eduapp.models.ModelUsers;
 import com.google.firebase.auth.FirebaseAuth;
@@ -199,6 +203,9 @@ public class UserFragment extends Fragment {
         } else if (id==R.id.action_settings) {
             //go to settinggs activity
             startActivity((new Intent(getActivity(), SettinggsActivity.class)));
+        }else if (id==R.id.action_create_group) {
+            //go to settinggs activity
+            startActivity((new Intent(getActivity(), GroupCreateActivity.class)));
         }
 
         return super.onOptionsItemSelected(item);

@@ -26,5 +26,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="Settings" />
+    <item
+        android:id="@+id/action_create_group"
+        android:title="Create group"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_creatgroup"/>
+
 
 </menu>

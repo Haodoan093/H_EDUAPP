@@ -9,10 +9,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.MenuItem;
 
 
+import com.example.h_eduapp.fragments.ChatListFragment;
+import com.example.h_eduapp.fragments.HomeFragment;
+import com.example.h_eduapp.fragments.NtificationsFragment;
+import com.example.h_eduapp.fragments.ProfileFragment;
+import com.example.h_eduapp.fragments.UserFragment;
 import com.example.h_eduapp.notifications.Token;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;

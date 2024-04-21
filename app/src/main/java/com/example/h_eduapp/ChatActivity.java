@@ -962,6 +962,8 @@ boolean isBlocked=false;
         //hide searchView, as we dont need it here
         menu.findItem(R.id.action_search).setVisible(false);
         menu.findItem(R.id.action_addpost).setVisible(false);
+
+        menu.findItem(R.id.action_create_group).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -1,4 +1,4 @@
-package com.example.h_eduapp;
+package com.example.h_eduapp.fragments;
 
 import android.os.Bundle;
 
@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.h_eduapp.R;
 import com.example.h_eduapp.adapters.AdapterNotification;
 import com.example.h_eduapp.models.ModelNotification;
 import com.google.firebase.auth.FirebaseAuth;

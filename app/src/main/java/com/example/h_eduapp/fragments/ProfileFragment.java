@@ -1,7 +1,11 @@
-package com.example.h_eduapp;
+package com.example.h_eduapp.fragments;
 
 import static android.app.Activity.RESULT_OK;
 
+import com.example.h_eduapp.AddPostActivity;
+import com.example.h_eduapp.MainActivity;
+import com.example.h_eduapp.R;
+import com.example.h_eduapp.SettinggsActivity;
 import com.example.h_eduapp.adapters.AdapterPosts;
 import com.example.h_eduapp.models.ModelPoost;
 import com.google.firebase.auth.AuthCredential;
@@ -855,6 +859,8 @@ final FirebaseUser user1= firebaseAuth.getCurrentUser();
         menuInflater.inflate(R.menu.menu_main, menu);
 
         MenuItem item = menu.findItem(R.id.action_search);
+
+        menu.findItem(R.id.action_create_group).setVisible(false);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

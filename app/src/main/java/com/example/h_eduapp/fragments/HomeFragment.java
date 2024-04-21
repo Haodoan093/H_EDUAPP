@@ -1,4 +1,4 @@
-package com.example.h_eduapp;
+package com.example.h_eduapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +20,10 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.h_eduapp.AddPostActivity;
+import com.example.h_eduapp.MainActivity;
+import com.example.h_eduapp.R;
+import com.example.h_eduapp.SettinggsActivity;
 import com.example.h_eduapp.adapters.AdapterPosts;
 import com.example.h_eduapp.models.ModelPoost;
 import com.google.firebase.auth.FirebaseAuth;
@@ -142,6 +146,8 @@ public class HomeFragment extends Fragment {
 
 
         MenuItem item= menu.findItem(R.id.action_search);
+
+        menu.findItem(R.id.action_create_group).setVisible(false);
         SearchView searchView= (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

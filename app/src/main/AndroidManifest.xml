@@ -20,6 +20,9 @@
         android:theme="@style/Theme.H_EDUAPP"
         tools:targetApi="31">
         <activity
+            android:name=".GroupCreateActivity"
+            android:exported="false" />
+        <activity
             android:name=".PostLikeByActivity"
             android:exported="false" />
         <activity
