@@ -147,7 +147,7 @@ boolean isBlocked=false;
 
         cameraPermissions = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}; // Thêm quyền WRITE_EXTERNAL_STORAGE vào đây
 
-// Khai báo mảng galleryPermissions
+            // Khai báo mảng galleryPermissions
         storagePermisssions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
@@ -241,10 +241,10 @@ boolean isBlocked=false;
                     nameTv.setText(name);
 
                     try {
-                        Picasso.get().load(hisImage).placeholder(R.drawable.ic_default_img_users)
+                        Picasso.get().load(hisImage).placeholder(R.drawable.avata)
                                 .into(profileIv);
                     } catch (Exception e) {
-                        Picasso.get().load(R.drawable.ic_default_img_users)
+                        Picasso.get().load(R.drawable.avata)
                                 .into(profileIv);
                     }
 
@@ -962,8 +962,10 @@ boolean isBlocked=false;
         //hide searchView, as we dont need it here
         menu.findItem(R.id.action_search).setVisible(false);
         menu.findItem(R.id.action_addpost).setVisible(false);
-
+        menu.findItem(R.id.action_add_participant).setVisible(false);
         menu.findItem(R.id.action_create_group).setVisible(false);
+        menu.findItem(R.id.action_settings).setVisible(false);
+        menu.findItem(R.id.action_logout).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 

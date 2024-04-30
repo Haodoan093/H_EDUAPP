@@ -16,9 +16,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -96,6 +98,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         String pTitle = postList.get(position).getpTitle();
         String pDescription = postList.get(position).getpDescr();
         String pImage = postList.get(position).getpImage();
+        String pVideo=postList.get(position).getpVideo();
         String pTimeStamp = postList.get(position).getpTime();
         String pLikes = postList.get(position).getpLikes();
         String pComments = postList.get(position).getpComments();
@@ -126,10 +129,28 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         setLikes(holder, pId);
         try {
             Picasso.get().load(uDp)
-                    .placeholder(R.drawable.ic_default_img_users)
+                    .placeholder(R.drawable.avata)
                     .into(holder.uPictureIv);
         } catch (Exception e) {
             // Handle exception if Picasso fails to load image
+        }
+        // Kiểm tra xem video có tồn tại hay không
+        if (pVideo.equals("noVideo")) {
+            // Nếu không có video, ẩn VideoView
+            holder.videoView.setVisibility(View.GONE);
+        } else {
+
+            // Nếu video tồn tại, hiển thị VideoView và tải video từ URL
+            holder.videoView.setVisibility(View.VISIBLE);
+            Uri videoUri = Uri.parse(pVideo);
+            holder.videoView.setVideoURI(videoUri);
+
+            // Tạo và thiết lập MediaController
+            MediaController mediaController = new MediaController(context);
+            mediaController.setAnchorView(holder.videoView);
+            holder.videoView.setMediaController(mediaController);
+
+
         }
 
         if (pImage.equals("noImage")) {
@@ -149,6 +170,12 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             @Override
             public void onClick(View view) {
                 showMoreOptions(holder.moreBtn, uid, myUid, pId, pImage);
+            }
+        });
+        holder.videoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.videoView.start(); // Bắt đầu phát video
             }
         });
         //like
@@ -468,6 +495,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         TextView uNameTv, pTimeTv, pTitleTv, pDesciptionTv, pLikesTv, pCommentsTv;
         Button likeBtn, commentBtn, shareBtn;
         ImageButton moreBtn;
+        VideoView videoView;
 
         LinearLayout profileLayout;
 
@@ -488,6 +516,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             moreBtn = itemView.findViewById(R.id.moreBtn);
             pCommentsTv = itemView.findViewById(R.id.pCommentsTv);
             profileLayout = itemView.findViewById(R.id.profileLayout);
+            videoView = itemView.findViewById(R.id.pVideoView);
 
         }
 

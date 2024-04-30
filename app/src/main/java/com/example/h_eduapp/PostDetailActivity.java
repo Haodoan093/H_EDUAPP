@@ -441,7 +441,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         mProcessLike = false;
                      /*   likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_liked,0,0,0);
                         likeBtn.setText("Liked");*/
-                        addToHisNotifications(""+hisDp,""+postId,"Liked your posts");
+                        addToHisNotifications(""+hisUid,""+postId,"Liked your posts");
                     }
                 }
             }
@@ -490,7 +490,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         commentEt.setText("");
                         updateCommentCount();
 
-                        addToHisNotifications(""+hisDp,""+postId,"Commented on your posts");
+                        addToHisNotifications(""+hisUid,""+postId,"Commented on your posts");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -541,9 +541,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
                             ////set user img
                             try {
-                                Picasso.get().load(myDp).placeholder(R.drawable.ic_default_imgchat_white).into(cAvatarIv);
+                                Picasso.get().load(myDp).placeholder(R.drawable.avata).into(cAvatarIv);
                             } catch (Exception e) {
-                                Picasso.get().load(R.drawable.ic_default_imgchat_white).into(cAvatarIv);
+                                Picasso.get().load(R.drawable.avata).into(cAvatarIv);
                             }
                         }
                     }
@@ -611,9 +611,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
                     ////set user img
                     try {
-                        Picasso.get().load(hisDp).placeholder(R.drawable.ic_default_imgchat_white).into(uPictureIv);
+                        Picasso.get().load(hisDp).placeholder(R.drawable.avata).into(uPictureIv);
                     } catch (Exception e) {
-                        Picasso.get().load(R.drawable.ic_default_imgchat_white).into(uPictureIv);
+                        Picasso.get().load(R.drawable.avata).into(uPictureIv);
                     }
 
 
@@ -644,6 +644,8 @@ public class PostDetailActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menu.findItem(R.id.action_addpost).setVisible(false);
         menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_add_participant).setVisible(false);
+        menu.findItem(R.id.action_create_group).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -1,9 +1,32 @@
 package com.example.h_eduapp.models;
 
 public class ModelPoost {
-    String pId,pTitle,pDescr,pLikes,pComments,pImage,pTime,uid,uEmail,uDp,uName;
+    String pId,pTitle,pDescr,pLikes,pComments,pImage,pTime,uid,uEmail,uDp,uName,pVideo;
 
     public ModelPoost() {
+    }
+
+    public ModelPoost(String pId, String pTitle, String pDescr, String pLikes, String pComments, String pImage, String pTime, String uid, String uEmail, String uDp, String uName, String pVideo) {
+        this.pId = pId;
+        this.pTitle = pTitle;
+        this.pDescr = pDescr;
+        this.pLikes = pLikes;
+        this.pComments = pComments;
+        this.pImage = pImage;
+        this.pTime = pTime;
+        this.uid = uid;
+        this.uEmail = uEmail;
+        this.uDp = uDp;
+        this.uName = uName;
+        this.pVideo = pVideo;
+    }
+
+    public String getpVideo() {
+        return pVideo;
+    }
+
+    public void setpVideo(String pVideo) {
+        this.pVideo = pVideo;
     }
 
     public ModelPoost(String pId, String pTitle, String pDescr, String pLikes, String pComments, String pImage, String pTime, String uid, String uEmail, String uDp, String uName) {

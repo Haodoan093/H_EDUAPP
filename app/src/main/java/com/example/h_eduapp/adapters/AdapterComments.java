@@ -85,7 +85,7 @@ public class AdapterComments extends  RecyclerView.Adapter<AdapterComments.MyHol
 
         try {
             Picasso.get().load(image)
-                    .placeholder(R.drawable.ic_default_img_users)
+                    .placeholder(R.drawable.avata)
                     .into(holder.avatarIv);
         } catch (Exception e) {
             // Handle exception if Picasso fails to load image

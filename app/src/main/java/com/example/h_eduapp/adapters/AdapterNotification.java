@@ -98,9 +98,9 @@ public class AdapterNotification extends RecyclerView.Adapter<AdapterNotificatio
                             if (holder.avatarIv != null) { // Kiểm tra avatarIv trước khi sử dụng
                                 holder.nameTv.setText(name);
                                 try {
-                                    Picasso.get().load(image).placeholder(R.drawable.ic_default_img_users).into(holder.avatarIv);
+                                    Picasso.get().load(image).placeholder(R.drawable.avata).into(holder.avatarIv);
                                 } catch (Exception e) {
-                                    holder.avatarIv.setImageResource(R.drawable.ic_default_img_users);
+                                    holder.avatarIv.setImageResource(R.drawable.avata);
                                 }
                             } else {
                                 Log.e("AdapterNotification", "avatarIv is null");

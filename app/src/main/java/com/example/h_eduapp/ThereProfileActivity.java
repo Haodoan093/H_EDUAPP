@@ -86,7 +86,7 @@ public class ThereProfileActivity extends AppCompatActivity {
                         Picasso.get().load(image).into(avatarIv);
                     } catch (Exception e) {
                         // if there is any exception while getting image the get default
-                        Picasso.get().load(R.drawable.ic_default_img_white).into(avatarIv);
+                        Picasso.get().load(R.drawable.avata).into(avatarIv);
                     }
                     try {
                         // if image is received the get
@@ -206,6 +206,7 @@ public class ThereProfileActivity extends AppCompatActivity {
         menu.findItem(R.id.action_addpost).setVisible(false);
 
         menu.findItem(R.id.action_create_group).setVisible(false);
+        menu.findItem(R.id.action_add_participant).setVisible(false);
         MenuItem item = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

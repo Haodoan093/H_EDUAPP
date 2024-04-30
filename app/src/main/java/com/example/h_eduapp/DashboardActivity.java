@@ -124,40 +124,33 @@ public class DashboardActivity extends AppCompatActivity {
             };
 
     private void showMoreOptions() {
-
-
         PopupMenu popupMenu = new PopupMenu(this, navigationView, Gravity.END);
-
-        popupMenu.getMenu().add(Menu.NONE, 0, 0, "Notifications");
-
-
-        popupMenu.getMenu().add(Menu.NONE, 1, 1, "Groups chats");
+        popupMenu.getMenuInflater().inflate(R.menu.menu_options, popupMenu.getMenu());
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                if (id == 0) {
+                if (id == R.id.menu_notifications) {
                     actionBar.setTitle("Notifications");
                     NtificationsFragment fragment5 = new NtificationsFragment();
                     FragmentTransaction ft5 = getSupportFragmentManager().beginTransaction();
                     ft5.replace(R.id.content, fragment5, "");
                     ft5.commit();
-                } else if (id == 1) {
+                } else if (id == R.id.menu_group_chats) {
                     actionBar.setTitle("Group chats");
                     GroupChatsFragment fragment6 = new GroupChatsFragment();
                     FragmentTransaction ft6 = getSupportFragmentManager().beginTransaction();
                     ft6.replace(R.id.content, fragment6, "");
                     ft6.commit();
                 }
-
-
-                return false;
+                return true;
             }
         });
-        popupMenu.show();
 
+        popupMenu.show();
     }
+
 
     private void checkUserStatus() {
         FirebaseUser user = firebaseAuth.getCurrentUser();

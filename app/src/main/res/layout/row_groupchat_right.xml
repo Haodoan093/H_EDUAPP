@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="100dp"
     android:layout_marginTop="10dp"
-
+android:orientation="vertical"
     android:background="@drawable/bg_sender"
     android:padding="10dp">
     <TextView
@@ -24,10 +24,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:layout_below="@+id/nameTv"
+
         android:layout_marginBottom="5dp"
         android:text="The message"
         android:textColor="@color/black" />
+    <ImageView
+        android:id="@+id/messageIv"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_image_black" />
 
     <TextView
         android:id="@+id/timeTv"
@@ -35,11 +41,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:layout_below="@+id/messageTv"
+
         android:layout_marginBottom="5dp"
         android:text="Time"
         android:layout_alignParentEnd="true"
         android:textSize="12dp"
         android:textColor="@color/black" />
 
-</RelativeLayout>
+</LinearLayout>

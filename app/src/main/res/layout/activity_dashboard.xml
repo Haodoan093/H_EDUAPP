@@ -6,23 +6,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-
     tools:context=".DashboardActivity">
-<!--Show ewmail of logged in user-->
-
+    <!--Show email of logged in user-->
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-
+        android:layout_weight="1" />
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         app:labelVisibilityMode="labeled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="#242727"
-        app:menu="@menu/menu_nav"/>
-
+        android:background="#686161"
+        app:menu="@menu/menu_nav" />
 </LinearLayout>

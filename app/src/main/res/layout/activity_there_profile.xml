@@ -32,7 +32,7 @@
                     android:layout_marginLeft="20dp"
                     android:background="#352D40"
                     android:padding="5dp"
-                    android:src="@drawable/ic_default_img_white"
+                    android:src="@drawable/avata"
                     android:layout_width="120dp"
                     android:layout_height="120dp" />
                 <LinearLayout

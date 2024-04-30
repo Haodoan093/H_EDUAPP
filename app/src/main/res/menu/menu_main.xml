@@ -31,6 +31,10 @@
         android:title="Create group"
         app:showAsAction="always"
         android:icon="@drawable/ic_creatgroup"/>
-
+    <item
+        android:id="@+id/action_add_participant"
+        android:title="Create group"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_add_person"/>
 
 </menu>

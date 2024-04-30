@@ -28,7 +28,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_default_img_users" />
+                android:src="@drawable/avata" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -66,24 +66,35 @@
             android:id="@+id/pTitleTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autoLink="all"
             android:text="Title"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:autoLink="all"/>
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/pDesciptionTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autoLink="all"
             android:text="The desciption of the post"
-            android:textColor="@color/black"
-            android:autoLink="all"/>
+            android:textColor="@color/black" />
 
         <ImageView
             android:id="@+id/pImageIv"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@color/white" />
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@color/white"
+            android:minHeight="100dp" />
+
+
+            <VideoView
+                android:id="@+id/pVideoView"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                />
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -94,16 +105,17 @@
                 android:id="@+id/pLikesTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.2k Likes "
                 android:layout_weight="1"
+                android:text="1.2k Likes "
                 android:textColor="@color/black" />
+
             <TextView
                 android:id="@+id/pCommentsTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.2k Comments"
                 android:layout_weight="1"
                 android:gravity="end"
+                android:text="1.2k Comments"
 
                 android:textAlignment="textEnd"
                 android:textColor="@color/black" />
@@ -121,16 +133,17 @@
             android:orientation="horizontal">
 
             <Button
-                android:textSize="10dp"
                 android:id="@+id/likeBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/bg_text"
+                android:drawableLeft="@drawable/ic_like"
                 android:drawablePadding="5dp"
+                android:paddingLeft="20dp"
                 android:text="LIKE"
                 android:textColor="@android:color/black"
-                android:background="@drawable/bg_text"
-                android:drawableLeft="@drawable/ic_like" />
+                android:textSize="10dp" />
 
             <Button
                 android:id="@+id/commentBtn"
@@ -138,14 +151,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/bg_text"
-                android:drawablePadding="5dp"
                 android:drawableLeft="@drawable/ic_comment"
+                android:drawablePadding="5dp"
+                android:paddingLeft="20dp"
                 android:text="COMMENT"
-                android:textSize="10dp"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="10dp" />
 
             <Button
-                android:textSize="10dp"
                 android:id="@+id/shareBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -153,8 +166,10 @@
                 android:background="@drawable/bg_text"
                 android:drawableLeft="@drawable/ic_share"
                 android:drawablePadding="5dp"
+                android:paddingLeft="20dp"
                 android:text="SHARE"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="10dp" />
 
 
         </LinearLayout>

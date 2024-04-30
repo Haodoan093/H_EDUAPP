@@ -44,7 +44,7 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/ic_default_img_users" />
+                            android:src="@drawable/avata" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -83,7 +83,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Title"
-                        android:textSize="16sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:autoLink="all"/>
 
@@ -97,9 +97,17 @@
 
                     <ImageView
                         android:id="@+id/pImageIv"
+
+                        android:adjustViewBounds="true"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:background="@color/white" />
+
+                    <VideoView
+                        android:id="@+id/pVideoView"
+                        android:layout_width="match_parent"
+                        android:layout_height="400dp"
+                        />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -145,6 +153,7 @@
                             android:layout_weight="1"
                             android:drawablePadding="5dp"
                             android:text="LIKE"
+                            android:paddingLeft="40dp"
                             android:textColor="@android:color/black"
                             android:background="@drawable/bg_text"
                             android:drawableLeft="@drawable/ic_like" />
@@ -156,6 +165,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:paddingLeft="40dp"
                             android:background="@drawable/bg_text"
                             android:drawableLeft="@drawable/ic_share"
                             android:drawablePadding="5dp"

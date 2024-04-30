@@ -149,7 +149,8 @@ public class UserFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.menu_main, menu);
-
+        menu.findItem(R.id.action_add_participant).setVisible(false);
+        menu.findItem(R.id.action_settings).setVisible(false);
         // Hide the menu item if it exists
         MenuItem addPostItem = menu.findItem(R.id.action_addpost);
         if (addPostItem != null) {

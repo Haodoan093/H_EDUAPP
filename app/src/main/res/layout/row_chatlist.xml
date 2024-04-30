@@ -15,7 +15,7 @@
             android:id="@+id/profileIv"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/ic_default_img_users" />
+            android:src="@drawable/avata" />
         <ImageView
             android:id="@+id/onlineStatusIv"
             android:layout_width="25dp"

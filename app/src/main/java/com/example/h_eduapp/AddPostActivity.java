@@ -27,7 +27,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -37,6 +39,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -54,6 +57,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,13 +67,21 @@ public class AddPostActivity extends AppCompatActivity {
     FirebaseDatabase userDatabase;
     EditText titleEt, descriptionEt;
     ImageView imageIv;
+    VideoView videoVv;
+    Button videoBtn,imageBtn;
     Button uploadBtn;
     DatabaseReference databaseReference;
     Uri image_uri = null;
+    Uri video_uri = null; // Thêm biến cho URI của video đính kèm
+
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
     private static final int IMAGE_PICK_CAMERA_CODE = 400;
     private static final int IMAGE_PICK_GALLERY_CODE = 300;
+
+    // Update constants for file types
+    private static final int VIDEO_PICK_CODE = 500;
+    private static final int FILE_PICK_CODE = 600;
 
     //arrays of permissions to be requested
     String cameraPermissions[];
@@ -98,7 +110,16 @@ public class AddPostActivity extends AppCompatActivity {
         titleEt = findViewById(R.id.pTitleEt);
         descriptionEt = findViewById(R.id.pDescriptionEt);
         imageIv = findViewById(R.id.pImageIv);
+        imageBtn = findViewById(R.id.pImageBtn);
         uploadBtn = findViewById(R.id.pUploadBtn);
+
+        //video
+        videoVv = findViewById(R.id.pVideoView);
+        videoBtn = findViewById(R.id.pVideoBtn);
+
+        MediaController mediaController= new MediaController(this);
+        mediaController.setAnchorView(videoVv);
+        videoVv.setMediaController(mediaController);
 
 
         pd = new ProgressDialog(this);
@@ -113,7 +134,7 @@ public class AddPostActivity extends AppCompatActivity {
         checkUserStatus();
 
         //get data through intent from previous activites's adapter
-
+//phan sua
         Intent intent = getIntent();
         String isUpdateKey = "" + intent.getStringExtra("key");
         editPostId = "" + intent.getStringExtra("editPostId");
@@ -163,20 +184,25 @@ public class AddPostActivity extends AppCompatActivity {
         // Khai báo mảng cameraPermissions
         cameraPermissions = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}; // Thêm quyền WRITE_EXTERNAL_STORAGE vào đây
 
-// Khai báo mảng galleryPermissions
+        // Khai báo mảng galleryPermissions
         storagePermisssions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
         actionBar.setSubtitle(email);
 
         //get iamge form camera /gallary
-        imageIv.setOnClickListener(new View.OnClickListener() {
+        imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showImagePickDialog();
             }
         });
-
+        videoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickVideoFromGallery(); // Gọi phương thức để chọn video từ thư viện
+            }
+        });
         checkUserStatus();
         //upload btn
         uploadBtn.setOnClickListener(new View.OnClickListener() {
@@ -459,8 +485,145 @@ public class AddPostActivity extends AppCompatActivity {
 
         String timeStamp = String.valueOf(System.currentTimeMillis());
         String filePathAndName = "Posts/" + "post_" + timeStamp;
+        // Đường dẫn và tên cho ảnh và video
+        String imageFilePathAndName = "Posts/" + "post_" + timeStamp ;
+        String videoFilePathAndName = "Posts/" + "post_" + timeStamp + ".mp4";
 
-        if (imageIv.getDrawable() != null) {
+        // Kiểm tra xem cả ảnh và video đã được chọn hay không
+        if (imageIv.getDrawable() != null && video_uri != null) {
+            // Nếu cả ảnh và video đều đã được chọn
+            // Tải ảnh lên Firebase Storage
+
+            Bitmap bitmap = ((BitmapDrawable) imageIv.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            //image
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(imageFilePathAndName);
+            imageRef.putBytes(data)
+                    .addOnSuccessListener(imageTaskSnapshot -> {
+                        // Nếu tải ảnh lên thành công
+                        Task<Uri> imageUriTask = imageTaskSnapshot.getStorage().getDownloadUrl();
+                        Task<Uri> videoUriTask = uploadVideoToStorage(videoFilePathAndName);
+
+                        // Khi cả ảnh và video đều đã được tải lên
+                        Tasks.whenAllComplete(imageUriTask, videoUriTask)
+                                .addOnSuccessListener(results -> {
+                                    // Lấy URL của ảnh và video
+                                    String imageDownloadUri = imageUriTask.getResult().toString();
+                                    String videoDownloadUri = videoUriTask.getResult().toString();
+
+                                    // Tạo HashMap chứa thông tin của bài đăng
+                                    HashMap<String, Object> hashMap = new HashMap<>();
+                                    hashMap.put("uid", uid);
+                                    hashMap.put("uName", name);
+                                    hashMap.put("uEmail", email);
+                                    hashMap.put("uDp", dp);
+                                    hashMap.put("pLikes", "0");
+                                    hashMap.put("pComments", "0");
+                                    hashMap.put("pId", timeStamp);
+                                    hashMap.put("pTitle", title);
+                                    hashMap.put("pDescr", desciption);
+                                    hashMap.put("pImage", imageDownloadUri); // URL của ảnh
+                                    hashMap.put("pVideo", videoDownloadUri); // URL của video
+                                    hashMap.put("pTime", timeStamp);
+
+                                    // Lưu thông tin bài đăng vào Firebase Realtime Database
+                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                                    ref.child(timeStamp).setValue(hashMap)
+                                            .addOnSuccessListener(unused -> {
+                                                pd.dismiss();
+                                                Toast.makeText(AddPostActivity.this, "Post published", Toast.LENGTH_SHORT).show();
+
+                                                // Đặt lại các trường nhập liệu
+                                                titleEt.setText("");
+                                                descriptionEt.setText("");
+                                                imageIv.setImageURI(null);
+                                                videoVv.setVideoURI(null);
+                                                video_uri = null;
+                                                image_uri = null;
+
+                                                // Gửi thông báo
+                                                prepareNotification(
+                                                        timeStamp,
+                                                        name + " added new post",
+                                                        title + "\n" + desciption,
+                                                        "PostNotification",
+                                                        "POST"
+                                                );
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                pd.dismiss();
+                                                Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            });
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        pd.dismiss();
+                        Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+        else if (video_uri != null) {
+            // Nếu có video được chọn
+            StorageReference videoRef = FirebaseStorage.getInstance().getReference().child(filePathAndName);
+            videoRef.putFile(video_uri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // Nếu tải video lên thành công
+                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                        while (!uriTask.isSuccessful()) ;
+                        String downloadUri = uriTask.getResult().toString();
+
+                        // Tạo HashMap chứa thông tin của bài đăng
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("uid", uid);
+                        hashMap.put("uName", name);
+                        hashMap.put("uEmail", email);
+                        hashMap.put("uDp", dp);
+                        hashMap.put("pLikes", "0");
+                        hashMap.put("pComments", "0");
+                        hashMap.put("pId", timeStamp);
+                        hashMap.put("pTitle", title);
+                        hashMap.put("pDescr", desciption);
+                        hashMap.put("pImage", "noImage");
+                        hashMap.put("pVideo", downloadUri); // URL của video
+                        hashMap.put("pTime", timeStamp);
+
+                        // Lưu thông tin bài đăng vào Firebase Realtime Database
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                        ref.child(timeStamp).setValue(hashMap)
+                                .addOnSuccessListener(unused -> {
+                                    pd.dismiss();
+                                    Toast.makeText(AddPostActivity.this, "Post published", Toast.LENGTH_SHORT).show();
+
+                                    // Đặt lại các trường nhập liệu
+                                    titleEt.setText("");
+                                    descriptionEt.setText("");
+                                    imageIv.setImageURI(null);
+                                    videoVv.setVideoURI(null);
+                                    video_uri = null;
+
+                                    // Gửi thông báo
+                                    prepareNotification(
+                                            timeStamp,
+                                            name + " added new post",
+                                            title + "\n" + desciption,
+                                            "PostNotification",
+                                            "POST"
+                                    );
+                                })
+                                .addOnFailureListener(e -> {
+                                    pd.dismiss();
+                                    Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        pd.dismiss();
+                        Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+       else  if (imageIv.getDrawable() != null) {
 
 
             Bitmap bitmap = ((BitmapDrawable) imageIv.getDrawable()).getBitmap();
@@ -494,7 +657,7 @@ public class AddPostActivity extends AppCompatActivity {
                                 hashMap.put("pDescr", desciption);
                                 hashMap.put("pImage", downloadUri);//khong thay
                                 hashMap.put("pTime", timeStamp);
-
+                                hashMap.put("pVideo", "noVideo"); // URL của video
 
                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
 
@@ -509,6 +672,7 @@ public class AddPostActivity extends AppCompatActivity {
                                                 titleEt.setText("");
                                                 descriptionEt.setText("");
                                                 imageIv.setImageURI(null);
+                                                videoVv.setVideoURI(null);
                                                 image_uri = null;
                                                 //send notification
                                                 prepareNotification(
@@ -554,7 +718,7 @@ public class AddPostActivity extends AppCompatActivity {
             hashMap.put("pDescr", desciption);
             hashMap.put("pImage", "noImage");
             hashMap.put("pTime", timeStamp);
-
+            hashMap.put("pVideo", "noVideo"); // URL của video
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
 
@@ -592,7 +756,17 @@ public class AddPostActivity extends AppCompatActivity {
         }
 
     }
-
+    // Phương thức tải video lên Firebase Storage
+    private Task<Uri> uploadVideoToStorage(String videoFilePathAndName) {
+        StorageReference videoRef = FirebaseStorage.getInstance().getReference().child(videoFilePathAndName);
+        return videoRef.putFile(video_uri)
+                .continueWithTask(task -> {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return videoRef.getDownloadUrl();
+                });
+    }
     private void showImagePickDialog() {
         //options(camera, gallary
 
@@ -604,8 +778,6 @@ public class AddPostActivity extends AppCompatActivity {
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
-
-
                 if (which == 0) {
                     // Mục Camera được chọn
                     if (!checkCameraPermission()) {
@@ -615,11 +787,8 @@ public class AddPostActivity extends AppCompatActivity {
                         // Quyền truy cập camera đã được cấp, chọn ảnh từ camera
                         pickFromCamera();
                     }
-
-
                 }
                 if (which == 1) {
-
                     // Mục Gallery được chọn
                     if (!checkStoragePermission()) {
                         // Kiểm tra và yêu cầu quyền truy cập bộ nhớ nếu chưa được cấp
@@ -629,10 +798,7 @@ public class AddPostActivity extends AppCompatActivity {
                         pickFromGallery();
                     }
                 }
-
-
             }
-
         });
 
         // Tạo và hiển thị dialog
@@ -652,6 +818,17 @@ public class AddPostActivity extends AppCompatActivity {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
             startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
+        }
+    }
+    private void pickVideoFromGallery() {
+        // Kiểm tra quyền truy cập bộ nhớ
+        if (!checkStoragePermission()) {
+            requestStoragePermission();
+        } else {
+            // Intent để mở thư viện ảnh
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+            galleryIntent.setType("video/*");
+            startActivityForResult(galleryIntent, VIDEO_PICK_CODE);
         }
     }
 
@@ -709,7 +886,7 @@ public class AddPostActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-
+        onBackPressed();
         return super.onSupportNavigateUp();
     }
 
@@ -718,6 +895,8 @@ public class AddPostActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menu.findItem(R.id.action_addpost).setVisible(false);
         menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_create_group).setVisible(false);
+        menu.findItem(R.id.action_add_participant).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -851,6 +1030,14 @@ public class AddPostActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         // this method will be called after picking image from camera or gallery
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == VIDEO_PICK_CODE) {
+            // Người dùng đã chọn một video từ thư viện
+            video_uri = data.getData(); // Lưu trữ URI của video được chọn
+            videoVv.setVideoURI(video_uri);
+
+            videoVv.start();
+            // Hiển thị video hoặc thực hiện các thao tác khác ở đây
+        }
         if (resultCode == RESULT_OK) {
             if (requestCode == IMAGE_PICK_GALLERY_CODE) {
                 // image is picked from gallery, get uri of image

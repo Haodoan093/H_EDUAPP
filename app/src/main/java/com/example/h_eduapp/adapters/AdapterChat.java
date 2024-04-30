@@ -101,7 +101,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
         holder.timeTv.setText(dateTime);
 
         try {
-            Picasso.get().load(imageUrl).placeholder(R.drawable.ic_default_img_users)
+            Picasso.get().load(imageUrl).placeholder(R.drawable.avata)
                     .into(holder.mProfileIv);
         } catch (Exception e) {
             // Handle exception if Picasso fails to load image
