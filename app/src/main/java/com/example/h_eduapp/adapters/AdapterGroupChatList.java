@@ -109,7 +109,7 @@ public class AdapterGroupChatList extends RecyclerView.Adapter<AdapterGroupChatL
                                 dateTime = sdf.format(cal.getTime());
                             }
 
-                         
+
                             holder.timeTv.setText(dateTime);
 
 

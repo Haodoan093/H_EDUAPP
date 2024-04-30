@@ -644,6 +644,7 @@ public class PostDetailActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menu.findItem(R.id.action_addpost).setVisible(false);
         menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_groupinfo).setVisible(false);
         menu.findItem(R.id.action_add_participant).setVisible(false);
         menu.findItem(R.id.action_create_group).setVisible(false);
         return super.onCreateOptionsMenu(menu);

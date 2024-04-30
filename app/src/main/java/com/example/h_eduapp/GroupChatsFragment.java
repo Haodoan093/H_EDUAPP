@@ -131,6 +131,7 @@ public class GroupChatsFragment extends Fragment {
         menu.findItem(R.id.action_addpost).setVisible(false);
         menu.findItem(R.id.action_settings).setVisible(false);
         menu.findItem(R.id.action_add_participant).setVisible(false);
+        menu.findItem(R.id.action_groupinfo).setVisible(false);
         // Hide the menu item if it exists
         MenuItem addPostItem = menu.findItem(R.id.action_addpost);
         if (addPostItem != null) {

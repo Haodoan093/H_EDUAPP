@@ -357,6 +357,7 @@ public class GroupChatActivity extends AppCompatActivity {
         menu.findItem(R.id.action_create_group).setVisible(false);
         menu.findItem(R.id.action_addpost).setVisible(false);
         menu.findItem(R.id.action_logout).setVisible(false);
+
         if (myGroupRole.equals("creator") || myGroupRole.equals("admin")) {
             menu.findItem(R.id.action_add_participant).setVisible(true);
         } else {
@@ -371,6 +372,11 @@ public class GroupChatActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_add_participant) {
             Intent intent = new Intent(this, GroupParticipantAddActivity.class);
+            intent.putExtra("groupId", groupId);
+            startActivity(intent);
+        }
+        else if (id == R.id.action_groupinfo) {
+            Intent intent = new Intent(this, GroupInfoActivity.class);
             intent.putExtra("groupId", groupId);
             startActivity(intent);
         }

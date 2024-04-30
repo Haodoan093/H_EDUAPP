@@ -966,6 +966,7 @@ boolean isBlocked=false;
         menu.findItem(R.id.action_create_group).setVisible(false);
         menu.findItem(R.id.action_settings).setVisible(false);
         menu.findItem(R.id.action_logout).setVisible(false);
+        menu.findItem(R.id.action_groupinfo).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
