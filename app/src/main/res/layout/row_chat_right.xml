@@ -36,21 +36,23 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_toEndOf="@+id/timeTv"
             android:background="@drawable/bg_sender"
             android:padding="15dp"
+            android:paddingEnd="30dp"
+            android:layout_marginEnd="20dp"
             android:text="His name"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/messageIv"
             android:layout_width="200dp"
-            android:layout_height="200dp"
+android:paddingEnd="30dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:adjustViewBounds="true"
-            android:background="@drawable/bg_sender"
-            android:padding="15dp"
+
+
             android:scaleType="fitCenter"
             android:src="@drawable/ic_image_black" />
 
