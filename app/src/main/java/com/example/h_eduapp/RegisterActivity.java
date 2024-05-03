@@ -26,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText mEmailEt, mNameEt, mPhoneEt, mPassswordEt, mRePasswordEt;
+    EditText mEmailEt, mNameEt, mPhoneEt, mPassswordEt, mRePasswordEt,mStudentCodeEt,mClassEt;
     Button mRegissterbtn;
 
     TextView mHaveAccount;
@@ -50,6 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
         mPassswordEt = findViewById(R.id.passwordEt);
         mRePasswordEt = findViewById(R.id.repasswordEt);
         mRegissterbtn = findViewById(R.id.registerBtn);
+        mStudentCodeEt = findViewById(R.id.studentCodeEt);
+        mClassEt = findViewById(R.id.classEt);
 
         mHaveAccount= findViewById(R.id.have_accountTv);
 
@@ -79,6 +81,8 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = mEmailEt.getText().toString().trim();
                 String name = mNameEt.getText().toString().trim();
                 String phone = mPhoneEt.getText().toString().trim();
+                String studenCode = mStudentCodeEt.getText().toString().trim();
+                String classDH = mClassEt.getText().toString().trim();
                 String password = mPassswordEt.getText().toString().trim();
                 String repassword = mRePasswordEt.getText().toString().trim();
 
@@ -99,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity {
                     mRePasswordEt.requestFocus();
 
                 } else {
-                    registerUser(email, password, name, phone);
+                    registerUser(email, password, name, phone,studenCode,classDH);
                 }
             }
         });
@@ -113,7 +117,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void registerUser(String email, String password, final String name, final String phone) {
+    private void registerUser(String email, String password, String name, String phone, String studenCode, String classDH) {
         //email and password pattern is valid, show progress dialog and start registering user
         progressDialog.show();
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -137,9 +141,10 @@ public class RegisterActivity extends AppCompatActivity {
                     hashMap.put("uid",uid);
                     hashMap.put("phone",phone);
                     hashMap.put("image","");
-                    hashMap.put("studentCode","");//ma sinh vien
-                    hashMap.put("DH","");//khoa bao nhieu
-                    hashMap.put("position","");//chuc vu : hoc sinh, giao vien
+                    hashMap.put("class",classDH);
+                    hashMap.put("studentCode",studenCode);//ma sinh vien
+
+
                     hashMap.put("onlineStatus","online");
                     hashMap.put("typingTo","noOne");
                     hashMap.put("cover","");
@@ -177,6 +182,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {

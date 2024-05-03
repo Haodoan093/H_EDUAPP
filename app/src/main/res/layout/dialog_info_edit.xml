@@ -73,18 +73,6 @@
         android:inputType="text" />
 
 
-    <TextView
-        android:id="@+id/editTextDOnGiaLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Chức vụ:" />
 
-    <EditText
-        android:id="@+id/edtChucvu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:inputType="text" />
 
 </LinearLayout>

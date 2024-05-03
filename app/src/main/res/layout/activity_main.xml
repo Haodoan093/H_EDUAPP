@@ -1,58 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="#4CAF50">
 
-    android:padding="20dp"
-    tools:context=".MainActivity">
+
+    <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+        android:id="@+id/imageView"
+        android:layout_width="259dp"
+        android:layout_height="261dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.251"
+        app:srcCompat="@drawable/logo" />
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="208dp"
-        android:layout_height="182dp"
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="370dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/bottom_white" />
 
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:src="@drawable/logo" />
-
-    <!-- TextView hiển thị chữ "Eduapp" -->
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageView2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:text="Eduapp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="60dp"
+        android:text="Welcome\nto EDUAPP"
+        android:textColor="@color/black"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-        android:textColor="#4CAF50"
-        android:textSize="48sp"
-        android:textStyle="bold" />
-
-    <!-- Button đăng ký -->
-    <Button
-        android:id="@+id/register_btn"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/login_btn"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/bg_buttton_solib_black"
-        android:text="Register"
-        android:textColor="@android:color/black" />
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:text="Start to join the learning community now"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv1" />
 
-    <!-- Button đăng nhập -->
-    <Button
+    <TextView
         android:id="@+id/login_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
-        android:background="@drawable/bg_buttton_solib_black"
-        android:text="Login"
-        android:textColor="@android:color/black" />
+        android:layout_width="175dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="236dp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:text="Get Started"
+        android:textStyle="bold"
+        android:background="@drawable/background_button_intro"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -455,7 +455,7 @@ final FirebaseUser user1= firebaseAuth.getCurrentUser();
         final EditText edtTenSV = dialogView.findViewById(R.id.edtTenSV);
         final EditText edtLop = dialogView.findViewById(R.id.edtLop);
         final EditText edtSDT = dialogView.findViewById(R.id.edtSDT);
-        final EditText edtChucvu = dialogView.findViewById(R.id.edtChucvu);
+
         EditText edtEmail = dialogView.findViewById(R.id.edtEmail);
         Query query = databaseReference.orderByChild("email").equalTo(user.getEmail());
         query.addValueEventListener(new ValueEventListener() {
@@ -468,14 +468,14 @@ final FirebaseUser user1= firebaseAuth.getCurrentUser();
                     String email = "" + ds.child("email").getValue();
                     String phone = "" + ds.child("phone").getValue();
                     String studentCode = "" + ds.child("studentCode").getValue();
-                    String position = "" + ds.child("position").getValue();
-                    String classDH = "" + ds.child("DH").getValue();
+
+                    String classDH = "" + ds.child("class").getValue();
 
                     edtMaSV.setText(studentCode);
                     edtTenSV.setText(name);
                     edtLop.setText(classDH);
                     edtSDT.setText(phone);
-                    edtChucvu.setText(position);
+
                     edtEmail.setText(email);
 
 
@@ -487,7 +487,7 @@ final FirebaseUser user1= firebaseAuth.getCurrentUser();
 
             }
         });
-        dialogBuilder.setNegativeButton("X", null);
+        dialogBuilder.setNegativeButton("Close", null);
         dialogBuilder.setTitle("Thông tin cá nhân");
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();

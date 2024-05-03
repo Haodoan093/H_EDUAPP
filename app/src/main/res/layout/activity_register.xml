@@ -4,28 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    tools:context=".RegisterActivity">
 
+    tools:context=".RegisterActivity">
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/top_background" />
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="80dp"
+        android:textStyle="bold"
         android:text="Register"
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
-        android:textSize="25sp" />
+        android:textSize="30sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailTIL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textView"
-        android:layout_marginTop="20dp">
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp">
 
         <EditText
+
             android:id="@+id/emailEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,10 +43,12 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameTIL"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/emailTIL"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp">
 
         <EditText
             android:id="@+id/nameEt"
@@ -47,13 +57,33 @@
             android:hint="Name"
             android:minHeight="48dp" />
     </com.google.android.material.textfield.TextInputLayout>
-
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/phoneTIL"
+        android:id="@+id/studentCodeTIL"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/nameTIL"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp">
+
+        <EditText
+            android:id="@+id/studentCodeEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Student code"
+            android:minHeight="48dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/phoneTIL"
+
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/studentCodeTIL"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp">
 
         <EditText
             android:id="@+id/phoneEt"
@@ -62,16 +92,37 @@
             android:hint="Phone"
             android:minHeight="48dp" />
     </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/classTIL"
+
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phoneTIL"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp">
+
+        <EditText
+            android:id="@+id/classEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Class"
+            android:minHeight="48dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordTIL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/phoneTIL"
+        android:layout_below="@id/classTIL"
         app:passwordToggleEnabled="true"
-        android:layout_marginTop="20dp">
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp">
 
         <EditText
+
             android:id="@+id/passwordEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,9 +138,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/passwordTIL"
         app:passwordToggleEnabled="true"
-        android:layout_marginTop="20dp">
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp">
 
         <EditText
+
             android:id="@+id/repasswordEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -105,17 +159,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/repasswordTIL"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bg_buttton_solib_black"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_background"
         android:text="Register"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/white"
+        android:textSize="18dp" />
 
     <TextView
         android:id="@+id/have_accountTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/registerBtn"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="Already have an account? Login"
         android:textAlignment="center"
         android:textColor="@color/black" />
