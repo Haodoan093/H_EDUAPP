@@ -177,10 +177,10 @@ public class ProfileFragment extends Fragment {
                     String phone = "" + ds.child("phone").getValue();
                     String image = "" + ds.child("image").getValue();
                     String cover = "" + ds.child("cover").getValue();
-
+                    String studentCode = "" + ds.child("studentCode").getValue();
                     nameTv.setText(name);
                     emailTv.setText(email);
-                    phoneTv.setText(phone);
+                    phoneTv.setText(studentCode);
                     try {
                         // if image is received the get
                         Picasso.get().load(image).into(avatarIv);

@@ -94,15 +94,13 @@
                         android:text="The desciption of the post"
                         android:textColor="@color/black"
                         android:autoLink="all"/>
-
                     <ImageView
                         android:id="@+id/pImageIv"
-
-                        android:adjustViewBounds="true"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:background="@color/white" />
-
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:background="@color/white"
+                        android:minHeight="100dp" />
                     <VideoView
                         android:id="@+id/pVideoView"
                         android:layout_width="match_parent"

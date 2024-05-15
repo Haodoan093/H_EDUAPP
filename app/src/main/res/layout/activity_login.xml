@@ -88,6 +88,7 @@
         android:textColor="@android:color/white"
         android:textSize="18dp" />
     <!-- Forgot password-->
+
     <TextView
         android:id="@+id/recoverPassTv"
         android:layout_width="match_parent"
@@ -97,13 +98,22 @@
         android:text="Forgot Password? Recovery it"
         android:textAlignment="center"
         android:textColor="@color/black" />
+    <TextView
+        android:id="@+id/tttTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recoverPassTv"
+        android:layout_marginTop="20dp"
+        android:text="__________Or__________"
+        android:textAlignment="center"
+        android:textColor="@color/black" />
 
     <!-- GG SifgnInBtn : Sign in with gg account   -->
     <com.google.android.gms.common.SignInButton
         android:id="@+id/googleLoginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/recoverPassTv"
+        android:layout_below="@+id/tttTv"
         android:layout_centerHorizontal="true"
         android:paddingTop="10dp" />
     <!--   Not Have account-->

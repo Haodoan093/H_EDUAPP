@@ -23,9 +23,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.example.h_eduapp.adapters.AdapterComments;
 import com.example.h_eduapp.models.ModelComment;
@@ -56,7 +58,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     ////to get detail of user and post
     String myUid, myEmail, hisUid, myName, myDp,
-            pImage, postId, pLikes, hisDp, hisNamel;
+            pImage, postId, pLikes, hisDp, hisNamel,pVideo;
 
     boolean mProcessComment = false;
     boolean mProcessLike = false;
@@ -67,6 +69,7 @@ public class PostDetailActivity extends AppCompatActivity {
     Button likeBtn, shareBtn;
     LinearLayout profileLayout;
     RecyclerView recyclerView;
+    VideoView videoView;
 
     List<ModelComment> commentList;
     AdapterComments adapterComments;
@@ -107,6 +110,7 @@ public class PostDetailActivity extends AppCompatActivity {
         shareBtn = findViewById(R.id.shareBtn);
         profileLayout = findViewById(R.id.profileLayout);
         pCommentsTv = findViewById(R.id.pCommentsTv);
+        videoView=findViewById(R.id.pVideoView);
 
         // Khởi tạo views cho phần comment
         commentEt = findViewById(R.id.commentEt);
@@ -570,6 +574,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     String pTimeStamp = "" + ds.child("pTime").getValue();
                     pImage = "" + ds.child("pImage").getValue();
                     hisDp = "" + ds.child("uDp").getValue();
+                    pVideo = "" + ds.child("pVideo").getValue();
                     hisUid = "" + ds.child("uid").getValue();
                     String uEmail = "" + ds.child("uEmail").getValue();
                     hisNamel = "" + ds.child("uName").getValue();
@@ -595,7 +600,24 @@ public class PostDetailActivity extends AppCompatActivity {
                     pCommentsTv.setText(commentCount + " Comments");
 
                     nameTv.setText(hisNamel);
+                    //set video
+                    if (pVideo.equals("noVideo")) {
+                        // Nếu không có video, ẩn VideoView
+                        videoView.setVisibility(View.GONE);
+                    } else {
 
+                        // Nếu video tồn tại, hiển thị VideoView và tải video từ URL
+                        videoView.setVisibility(View.VISIBLE);
+                        Uri videoUri = Uri.parse(pVideo);
+                        videoView.setVideoURI(videoUri);
+
+                        // Tạo và thiết lập MediaController
+                        MediaController mediaController = new MediaController(PostDetailActivity.this);
+                        mediaController.setAnchorView(videoView);
+                        videoView.setMediaController(mediaController);
+
+
+                    }
                     //set image
                     if (pImage.equals("noImage")) {
                         pImageIv.setVisibility(View.GONE);

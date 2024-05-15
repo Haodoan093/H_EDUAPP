@@ -2,88 +2,76 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".AddPostActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
         android:orientation="vertical">
 
-        <!-- EditText: input post title -->
+        <!-- Input post title -->
         <EditText
             android:id="@+id/pTitleEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/editextstyle"
             android:hint="Enter Title"
-            android:padding="10dp"
-            android:singleLine="true" />
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            android:inputType="textCapSentences|textMultiLine"
+            android:gravity="start"
+            android:maxLines="2" />
 
         <!-- ImageView: to display image -->
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <VideoView
-                android:id="@+id/pVideoView"
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:minHeight="200dp"
-                android:scaleType="fitCenter"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp" />
-        </FrameLayout>
-
-
         <ImageView
             android:id="@+id/pImageIv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:adjustViewBounds="true"
             android:background="#AABDBF"
-            android:minHeight="20dp"
-           />
+
+            android:layout_marginBottom="8dp" />
+
+
+        <!-- VideoView: to display video -->
+        <VideoView
+            android:id="@+id/pVideoView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:minHeight="200dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
+
         <Button
             android:id="@+id/pImageBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Attach Image"
-            android:layout_marginTop="16dp"/>
-        <Button
-            android:id="@+id/pVideoBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Attach Video"
-            android:layout_marginTop="16dp"/>
 
-
-        <!-- VideoView: to display video -->
-
-
-        <!-- TextView: to display attached files -->
-
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
         <!-- RecyclerView: to list attached files (if multiple) -->
         <TextView
             android:id="@+id/pAttachedFilesTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:padding="8dp"
             android:text="Attached Files:"
             android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pAttachedFilesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:background="@android:color/transparent"
-            android:padding="5dp"
+            android:padding="8dp"
             android:visibility="gone" />
 
-        <!-- EditText: input post description -->
+        <!-- Input post description -->
         <EditText
             android:id="@+id/pDescriptionEt"
             android:layout_width="match_parent"
@@ -93,21 +81,20 @@
             android:inputType="textCapSentences|textMultiLine"
             android:minHeight="120dp"
             android:gravity="start"
-            android:padding="10dp"
-            android:singleLine="true" />
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            android:maxLines="6" />
 
         <!-- Button: to upload post -->
         <Button
             android:id="@+id/pUploadBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
             android:background="@drawable/bg_buttton_solib_black"
             android:text="Upload"
             android:textColor="@android:color/black"
-            style="@style/Widget.AppCompat.Button.Colored" />
+            android:textAllCaps="false"
+            android:layout_marginBottom="16dp" />
 
     </LinearLayout>
 

@@ -143,8 +143,6 @@ public class RegisterActivity extends AppCompatActivity {
                     hashMap.put("image","");
                     hashMap.put("class",classDH);
                     hashMap.put("studentCode",studenCode);//ma sinh vien
-
-
                     hashMap.put("onlineStatus","online");
                     hashMap.put("typingTo","noOne");
                     hashMap.put("cover","");

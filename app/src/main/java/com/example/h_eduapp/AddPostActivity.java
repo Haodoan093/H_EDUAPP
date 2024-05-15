@@ -68,7 +68,7 @@ public class AddPostActivity extends AppCompatActivity {
     EditText titleEt, descriptionEt;
     ImageView imageIv;
     VideoView videoVv;
-    Button videoBtn,imageBtn;
+    Button imageBtn;
     Button uploadBtn;
     DatabaseReference databaseReference;
     Uri image_uri = null;
@@ -95,7 +95,7 @@ public class AddPostActivity extends AppCompatActivity {
     boolean isUserDataReady = false;
 
     //info of post to be edited
-    String editTitle, editDescription, editImage;
+    String editTitle, editDescription, editImage,editVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +115,6 @@ public class AddPostActivity extends AppCompatActivity {
 
         //video
         videoVv = findViewById(R.id.pVideoView);
-        videoBtn = findViewById(R.id.pVideoBtn);
 
         MediaController mediaController= new MediaController(this);
         mediaController.setAnchorView(videoVv);
@@ -194,15 +193,12 @@ public class AddPostActivity extends AppCompatActivity {
         imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showImagePickDialog();
+                // Hiển thị dialog để chọn ảnh hoặc video
+                showImageVideoPickDialog();
             }
         });
-        videoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pickVideoFromGallery(); // Gọi phương thức để chọn video từ thư viện
-            }
-        });
+
+
         checkUserStatus();
         //upload btn
         uploadBtn.setOnClickListener(new View.OnClickListener() {
@@ -233,6 +229,29 @@ public class AddPostActivity extends AppCompatActivity {
 
     }
 
+    private void showImageVideoPickDialog() {
+        // Tạo dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Image or Video");
+        // Thêm các tùy chọn
+        String[] options = {"Image", "Video"};
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == 0) {
+                    // Chọn ảnh
+                    showImagePickDialog();
+                } else if (i == 1) {
+                    // Chọn video
+                    pickVideoFromGallery();
+                }
+            }
+        });
+        // Hiển thị dialog
+        builder.create().show();
+    }
+
+
     private void handSendImage(Intent intent) {
              Uri imageUri=(Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
              if(imageUri!=null){
@@ -250,21 +269,100 @@ public class AddPostActivity extends AppCompatActivity {
     }
 
 
-    private void beginUpdate(String title, String desciption, String editPostId) {
-
+    private void beginUpdate(String title, String description, String editPostId) {
         pd.setMessage("Updating Post...");
-
         pd.show();
 
         if (!editImage.equals("noImage")) {
-            //without image
-            updateWasWithImage(title, desciption, editPostId);
-        } else if (imageIv.getDrawable() != null) {
-            updateWithNowImage(title, desciption, editPostId);
+            // Có ảnh trong bài đăng gốc
+            updateWasWithImage(title, description, editPostId);
+        } else if (video_uri != null) {
+            // Có video mới được chọn
+            updateWithNowVideo(title, description, editPostId);
+        }/* else if (!editVideo.equals("noVideo")) {
+            // Đã có video trong bài đăng gốc
+            updateWasWithVideo(title, description, editPostId);
+        }*/ else if (imageIv.getDrawable() != null) {
+            // Có ảnh mới được chọn
+            updateWithNowImage(title, description, editPostId);
         } else {
-            //withoud image
-            updateWithoutImage(title, desciption, editPostId);
+            // Không có ảnh hoặc video mới được chọn
+            updateWithoutImage(title, description, editPostId);
         }
+    }
+    private void updateWasWithVideo(String title, String description, String editPostId) {
+        // Update bài đăng đã có video
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("uid", uid);
+        hashMap.put("uName", name);
+        hashMap.put("uDp", dp);
+        hashMap.put("uEmail", email);
+        hashMap.put("pTitle", title);
+        hashMap.put("pDescr", description);
+        hashMap.put("pVideo", video_uri); // Sử dụng videoUrl từ bài đăng gốc
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+        ref.child(editPostId).updateChildren(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        pd.dismiss();
+                        Toast.makeText(AddPostActivity.this, "Updated with Video", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        pd.dismiss();
+                        Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private void updateWithNowVideo(String title, String description, String editPostId) {
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String filePathAndName = "Posts/" + "post_" + timeStamp;
+        StorageReference ref = FirebaseStorage.getInstance().getReference().child(filePathAndName);
+        ref.putFile(video_uri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                        while (!uriTask.isSuccessful()) ;
+
+                        String downloadUri = uriTask.getResult().toString();
+                        if (uriTask.isSuccessful()) {
+                            HashMap<String, Object> hashMap = new HashMap<>();
+                            hashMap.put("uid", uid);
+                            hashMap.put("uName", name);
+                            hashMap.put("uDp", dp);
+                            hashMap.put("uEmail", email);
+                            hashMap.put("pTitle", title);
+                            hashMap.put("pDescr", description);
+                            hashMap.put("pVideo", downloadUri); // Thêm link video vào HashMap
+
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                            ref.child(editPostId).updateChildren(hashMap)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            pd.dismiss();
+                                            Toast.makeText(AddPostActivity.this, "Updated with Video", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            pd.dismiss();
+                                            Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        pd.dismiss();
+                        Toast.makeText(AddPostActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void updateWithoutImage(String title, String desciption, String editPostId) {
@@ -275,7 +373,7 @@ public class AddPostActivity extends AppCompatActivity {
         hashMap.put("uDp", dp);
         hashMap.put("uEmail", email);
 
-
+        hashMap.put("pVideo", "noVideo");
         hashMap.put("pTitle", title);
         hashMap.put("pDescr", desciption);
         hashMap.put("pImage", "noImage");//khong thay
@@ -325,7 +423,7 @@ public class AddPostActivity extends AppCompatActivity {
                             hashMap.put("uDp", dp);
                             hashMap.put("uEmail", email);
 
-
+                            hashMap.put("pVideo", "noVideo");
                             hashMap.put("pTitle", title);
                             hashMap.put("pDescr", desciption);
                             hashMap.put("pImage", downloadUri);//khong thay
@@ -394,7 +492,7 @@ public class AddPostActivity extends AppCompatActivity {
                                             hashMap.put("uDp", dp);
                                             hashMap.put("uEmail", email);
 
-
+                                            hashMap.put("pVideo", "noVideo");
                                             hashMap.put("pTitle", title);
                                             hashMap.put("pDescr", desciption);
                                             hashMap.put("pImage", downloadUri);//khong thay
@@ -448,16 +546,25 @@ public class AddPostActivity extends AppCompatActivity {
                     editTitle = "" + ds.child("pTitle").getValue();
                     editDescription = "" + ds.child("pDescr").getValue();
                     editImage = "" + ds.child("pImage").getValue();
+                    editVideo = "" + ds.child("pVideo").getValue();
 
                     titleEt.setText(editTitle);
                     descriptionEt.setText(editDescription);
 
-                    if (!editImage.equals("noImage")) {
+                    if (editImage != null && !editImage.equals("noImage")) {
                         try {
                             Picasso.get().load(editImage).into(imageIv);
                         } catch (Exception e) {
 
                         }
+                    }
+                    if(!editVideo.equals("noVideo")){
+
+                        videoVv.setVisibility(View.VISIBLE);
+
+                        videoVv.setVideoURI(Uri.parse(editVideo));
+                        videoVv.requestFocus();
+
                     }
                 }
 
@@ -477,7 +584,7 @@ public class AddPostActivity extends AppCompatActivity {
             Toast.makeText(this, "Please wait, user data is not ready yet", Toast.LENGTH_SHORT).show();
             return;
         }
-        pd.setMessage("PPublishing post...");
+        pd.setMessage("Publishing post...");
         pd.show();
 
 
@@ -1033,6 +1140,8 @@ public class AddPostActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == VIDEO_PICK_CODE) {
             // Người dùng đã chọn một video từ thư viện
+            videoVv.setVisibility(View.VISIBLE);
+            imageIv.setVisibility(View.GONE);
             video_uri = data.getData(); // Lưu trữ URI của video được chọn
             videoVv.setVideoURI(video_uri);
 
@@ -1040,12 +1149,15 @@ public class AddPostActivity extends AppCompatActivity {
             // Hiển thị video hoặc thực hiện các thao tác khác ở đây
         }
         if (resultCode == RESULT_OK) {
+
             if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                imageIv.setVisibility(View.VISIBLE);
                 // image is picked from gallery, get uri of image
                 image_uri = data.getData();
                 imageIv.setImageURI(image_uri);
                 // uploadProfileCoverPhoto(image_uri);
             } else if (requestCode == IMAGE_PICK_CAMERA_CODE) {
+                imageIv.setVisibility(View.VISIBLE);
                 imageIv.setImageURI(image_uri);
                 //  uploadProfileCoverPhoto(image_uri);
             }

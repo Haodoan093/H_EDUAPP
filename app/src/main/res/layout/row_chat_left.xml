@@ -45,16 +45,18 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_image_black" />
 
-        <TextView
-            android:id="@+id/timeTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="09/03/2024 05:59PM"
 
-            android:textColor="@color/black"
-            android:textSize="12sp" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/timeTv"
+
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:text="09/03/2024 05:59PM"
+android:paddingStart="30dp"
+        android:textColor="@color/black"
+        android:textSize="12sp" />
     <TextView
         android:id="@+id/isSeenTv"
         android:layout_width="match_parent"
