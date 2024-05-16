@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,9 +25,17 @@ import com.example.h_eduapp.notifications.Token;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService;
+import com.zegocloud.uikit.prebuilt.call.config.ZegoNotificationConfig;
+import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig;
+import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationService;
 
 
 public class DashboardActivity extends AppCompatActivity {
@@ -35,6 +44,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     ActionBar actionBar;
     String mUid;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference usersDbRef;
     BottomNavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +53,10 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
 
+
+        usersDbRef = firebaseDatabase.getReference("Users");
         actionBar = getSupportActionBar();
         actionBar.setTitle("Profile");
 
@@ -58,6 +72,23 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         checkUserStatus();
+        Query userQuery = usersDbRef.orderByChild("uid").equalTo(mUid);
+        userQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    //get data
+                    String name = "" + ds.child("name").getValue();
+                    startService(mUid,name);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     public void updateToken() {
@@ -144,6 +175,7 @@ public class DashboardActivity extends AppCompatActivity {
                     ft6.replace(R.id.content, fragment6, "");
                     ft6.commit();
                 }
+
                 return true;
             }
         });
@@ -151,6 +183,22 @@ public class DashboardActivity extends AppCompatActivity {
         popupMenu.show();
     }
 
+
+    void startService(String userID,String userName) {
+
+        Application application = getApplication(); // Android's application context
+        long appID = 483982347;   // yourAppID
+        String appSign = "847906dcca7d527301432afb1d2c122719ebaae716632803da1995196968d444";  // yourAppSign
+
+
+
+        ZegoUIKitPrebuiltCallInvitationConfig callInvitationConfig = new ZegoUIKitPrebuiltCallInvitationConfig();
+        ZegoNotificationConfig zegoNotificationConfig = new ZegoNotificationConfig();
+        zegoNotificationConfig.sound = "zego_uikit_sound_call";
+        zegoNotificationConfig.channelID = "CallInvitation";
+        zegoNotificationConfig.channelName = "CallInvitation";
+        ZegoUIKitPrebuiltCallService.init(getApplication(), appID, appSign, userID, userName, callInvitationConfig);
+    }
 
     private void checkUserStatus() {
         FirebaseUser user = firebaseAuth.getCurrentUser();

@@ -20,6 +20,9 @@
         android:theme="@style/Theme.H_EDUAPP"
         tools:targetApi="31">
         <activity
+            android:name=".CallActivity"
+            android:exported="false" />
+        <activity
             android:name=".GroupEditActivity"
             android:exported="false" />
         <activity

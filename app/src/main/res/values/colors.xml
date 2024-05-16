@@ -11,4 +11,11 @@
     <color name="onlineIndicatorGray">#808080</color>
     <color name="green">#068251</color>
 
+    <color name="my_primary_color">#3F51B5</color>
+    <color name="my_primary_dark_color">#303F9F</color>
+    <color name="my_accent_color">#FF4081</color>
+    <color name="my_text_color_primary">#212121</color>
+    <color name="my_text_color_secondary">#727272</color>
+
+
 </resources>

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -63,6 +64,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService;
+import com.zegocloud.uikit.prebuilt.call.config.ZegoNotificationConfig;
+import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig;
+import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationService;
+import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton;
+import com.zegocloud.uikit.service.defines.ZegoUIKitUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +77,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,16 +87,18 @@ import java.util.concurrent.TimeUnit;
 public class ChatActivity extends AppCompatActivity {
 
 
+
+    ZegoSendCallInvitationButton voiceCallBtn,videoCallBtn;
     //views from xml
     Toolbar toolbar;
     RecyclerView recyclerView;
-    ImageView profileIv,blockIv;
+    ImageView profileIv, blockIv;
     TextView nameTv, userStatusTv;
 
     EditText messageEt;
     ImageButton sendBtn, attachBtn;
     FirebaseAuth firebaseAuth;
-boolean isBlocked=false;
+    boolean isBlocked = false;
     String hisUid;
     String myUid;
     String hisImage;
@@ -144,10 +154,12 @@ boolean isBlocked=false;
         blockIv = findViewById(R.id.blockIv);
 
         attachBtn = findViewById(R.id.attachBtn);
+        voiceCallBtn=findViewById(R.id.voice_call_btn);
+        videoCallBtn=findViewById(R.id.video_call_btn);
 
         cameraPermissions = new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}; // Thêm quyền WRITE_EXTERNAL_STORAGE vào đây
 
-            // Khai báo mảng galleryPermissions
+        // Khai báo mảng galleryPermissions
         storagePermisssions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
@@ -323,7 +335,25 @@ boolean isBlocked=false;
         seenMessage();
 
 
+        setVideoCall(hisUid);
+        setVoiceCall(hisUid);
     }
+    void setVoiceCall(String targetUserID){
+        voiceCallBtn.setIsVideoCall(false);
+        voiceCallBtn.setResourceID("zego_uikit_call"); // Please fill in the resource ID name that has been configured in the ZEGOCLOUD's console here.
+        voiceCallBtn.setInvitees(Collections.singletonList(new ZegoUIKitUser(targetUserID)));
+
+    }
+    void setVideoCall(String targetUserID){
+        videoCallBtn.setIsVideoCall(true);
+        videoCallBtn.setResourceID("zego_uikit_call"); // Please fill in the resource ID name that has been configured in the ZEGOCLOUD's console here.
+        videoCallBtn.setInvitees(Collections.singletonList(new ZegoUIKitUser(targetUserID)));
+
+
+    }
+
+
+
     private void checkIsBlocked() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         ref.child(firebaseAuth.getUid()).child("BlockedUsers")
@@ -334,7 +364,7 @@ boolean isBlocked=false;
                         for (DataSnapshot ds : snapshot.getChildren()) {
                             if (ds.exists()) {
                                 blockIv.setImageResource(R.drawable.ic_block_red);
-                              isBlocked=true;
+                                isBlocked = true;
                             }
                         }
                     }
@@ -689,10 +719,10 @@ boolean isBlocked=false;
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Token token = ds.getValue(Token.class);
-                    Data data = new Data(""+myUid
-                            , ""+name + " : " + message,
+                    Data data = new Data("" + myUid
+                            , "" + name + " : " + message,
                             "New Message",
-                            ""+hisUid
+                            "" + hisUid
                             , "ChatNotification",
                             R.drawable.ic_default_img_users
 
@@ -877,14 +907,14 @@ boolean isBlocked=false;
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 progressDialog.dismiss();
                 //get url of uploaded image
-                Task<Uri> uriTask= taskSnapshot.getStorage().getDownloadUrl();
-                while (!uriTask.isSuccessful());
-                String dowloadUri= uriTask.getResult().toString();
+                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                while (!uriTask.isSuccessful()) ;
+                String dowloadUri = uriTask.getResult().toString();
 
-                if(uriTask.isSuccessful()){
-                    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
-                    HashMap<String ,Object> hashMap= new HashMap<>();
-                    hashMap.put("sender",myUid);
+                if (uriTask.isSuccessful()) {
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("sender", myUid);
                     hashMap.put("receiver", hisUid);
                     hashMap.put("message", dowloadUri);
 
@@ -894,17 +924,17 @@ boolean isBlocked=false;
                     //put this data to firebase
                     databaseReference.child("Chats").push().setValue(hashMap);
                     //send notif
-                    DatabaseReference databas=FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+                    DatabaseReference databas = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
                     databas.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            ModelUsers user= snapshot.getValue(ModelUsers.class);
+                            ModelUsers user = snapshot.getValue(ModelUsers.class);
 
-                            if (notify){
-                                sendNotification(hisUid,user.getName(),"Sent you a photo...");
+                            if (notify) {
+                                sendNotification(hisUid, user.getName(), "Sent you a photo...");
 
                             }
-                            notify=false;
+                            notify = false;
                         }
 
                         @Override
