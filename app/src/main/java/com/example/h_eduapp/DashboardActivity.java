@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 
 
@@ -23,6 +24,7 @@ import com.example.h_eduapp.fragments.ProfileFragment;
 import com.example.h_eduapp.fragments.UserFragment;
 import com.example.h_eduapp.notifications.Token;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -175,7 +177,12 @@ public class DashboardActivity extends AppCompatActivity {
                     ft6.replace(R.id.content, fragment6, "");
                     ft6.commit();
                 }
+                else if (id == R.id.menu_meeting) {
+                    actionBar.setTitle("Meeting");
+                    Intent intent= new Intent(DashboardActivity.this,MeetingActivity.class);
+                    startActivity(intent);
 
+                }
                 return true;
             }
         });

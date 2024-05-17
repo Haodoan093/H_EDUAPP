@@ -20,7 +20,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="#FFFFFF"
-
-
         app:menu="@menu/menu_nav" />
 </LinearLayout>

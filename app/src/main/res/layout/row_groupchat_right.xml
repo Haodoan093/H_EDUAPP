@@ -9,6 +9,10 @@
 
     android:padding="10dp">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <TextView
         android:id="@+id/nameTv"
         android:layout_width="wrap_content"
@@ -20,44 +24,43 @@
 
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/messageTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/bg_sender"
-        android:padding="15dp"
-        android:paddingEnd="30dp"
-        android:text="His name"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/messageTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_sender"
+            android:padding="15dp"
+            android:paddingEnd="30dp"
+            android:text="His name"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
-    <ImageView
-        android:id="@+id/messageIv"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:adjustViewBounds="true"
-        android:paddingEnd="30dp"
+        <ImageView
+            android:id="@+id/messageIv"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/messageTv"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:paddingEnd="30dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_image_black" />
 
-
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_image_black" />
-
-    <TextView
-        android:id="@+id/timeTv"
-        android:layout_width="161dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="5dp"
-        android:textAlignment="textEnd"
-        android:layout_marginTop="5dp"
-        android:paddingEnd="10dp"
-        android:layout_marginBottom="5dp"
-        android:text="Time"
-        android:textColor="@color/black"
-        android:textSize="12dp" />
-
+        <TextView
+            android:id="@+id/timeTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/messageIv"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="8dp"
+            android:text="09/03/2024 05:59PM"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+    </RelativeLayout>
 </LinearLayout>

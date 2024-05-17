@@ -20,8 +20,14 @@
         android:theme="@style/Theme.H_EDUAPP"
         tools:targetApi="31">
         <activity
-            android:name=".CallActivity"
+            android:name=".ConferenceActivity"
+            android:exported="false"
+            android:theme="@style/AppThemeNoActionBar" /> <!-- Sử dụng theme không có action bar -->
+
+        <activity
+            android:name=".MeetingActivity"
             android:exported="false" />
+
         <activity
             android:name=".GroupEditActivity"
             android:exported="false" />

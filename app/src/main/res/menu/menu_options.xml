@@ -6,7 +6,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_notification" />
-
+    <item
+        android:id="@+id/menu_meeting"
+        android:title="Meeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <item
         android:id="@+id/menu_group_chats"
         android:title="Group"

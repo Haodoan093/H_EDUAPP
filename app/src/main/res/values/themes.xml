@@ -20,5 +20,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="Theme.AppCompat.Light"/>
 
+    <style name="AppThemeNoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Không có action bar -->
+    </style>
 
 </resources>

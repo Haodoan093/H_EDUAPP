@@ -8,6 +8,7 @@ import com.example.h_eduapp.R;
 import com.example.h_eduapp.SettinggsActivity;
 import com.example.h_eduapp.adapters.AdapterPosts;
 import com.example.h_eduapp.models.ModelPoost;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -76,7 +77,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment {
-
+    TextInputEditText addpost_btn;
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
     FirebaseDatabase firebaseDatabase;
@@ -89,7 +90,7 @@ public class ProfileFragment extends Fragment {
 
     //view from xml
 
-    ImageView avatarIv, coverIv;
+    ImageView avatarIv, coverIv,avatarIv1;
     FloatingActionButton fab;
     TextView nameTv, emailTv, phoneTv;
 
@@ -139,11 +140,15 @@ public class ProfileFragment extends Fragment {
         storageReference = FirebaseStorage.getInstance().getReference();
 
         //init view
+        addpost_btn = view.findViewById(R.id.addpost_btn);
         avatarIv = view.findViewById(R.id.avatarIv);
+        avatarIv1 = view.findViewById(R.id.avatarIv1);
         nameTv = view.findViewById(R.id.nameTv);
         emailTv = view.findViewById(R.id.emailTv);
         phoneTv = view.findViewById(R.id.phoneTv);
         coverIv = view.findViewById(R.id.coverIv);
+
+
         fab = view.findViewById(R.id.fab);
         postRecyclerview = view.findViewById(R.id.recyclerview_posts);
         //init arrays of permisssion
@@ -184,9 +189,11 @@ public class ProfileFragment extends Fragment {
                     try {
                         // if image is received the get
                         Picasso.get().load(image).into(avatarIv);
+                        Picasso.get().load(image).into(avatarIv1);
                     } catch (Exception e) {
                         // if there is any exception while getting image the get default
                         Picasso.get().load(R.drawable.ic_default_img_white).into(avatarIv);
+                        Picasso.get().load(R.drawable.ic_default_img_white).into(avatarIv1);
                     }
                     try {
                         // if image is received the get
@@ -204,7 +211,12 @@ public class ProfileFragment extends Fragment {
             }
         });
         //fab button click
-
+        addpost_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AddPostActivity.class));
+            }
+        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

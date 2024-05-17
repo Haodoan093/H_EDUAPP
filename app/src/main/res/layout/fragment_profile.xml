@@ -29,6 +29,7 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="140dp"
+
                 android:layout_marginTop="150dp"
                 android:orientation="horizontal">
 
@@ -44,10 +45,11 @@
                     android:src="@drawable/avata" />
 
                 <LinearLayout
+                    android:id="@+id/profile1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginTop="50dp"
+
                     android:orientation="vertical">
 
                     <TextView
@@ -83,12 +85,56 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/linearLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayout"
+                android:background="@color/white"
+
+                android:orientation="horizontal">
+
+                <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+                    android:id="@+id/avatarIv1"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="20dp"
+                    android:padding="5dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/avata" />
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:backgroundTint="@color/my_primary_color"
+                    android:hint="Add post ?">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/addpost_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="none"
+                        android:maxLength="10"
+                        android:textSize="18sp"
+
+                        />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerview_posts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/linearLayout"
+                android:layout_below="@+id/linearLayout1"
                 android:layout_marginTop="6dp" />
 
         </RelativeLayout>
@@ -103,7 +149,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
-
+        android:backgroundTint="@color/green"
         android:contentDescription="Add new item"
         android:src="@drawable/ic_edit_white" />
 

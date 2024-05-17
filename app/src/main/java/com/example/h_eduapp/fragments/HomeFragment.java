@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -26,13 +27,16 @@ import com.example.h_eduapp.R;
 import com.example.h_eduapp.SettinggsActivity;
 import com.example.h_eduapp.adapters.AdapterPosts;
 import com.example.h_eduapp.models.ModelPoost;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +47,11 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment {
     FirebaseAuth firebaseAuth;
-
+    FirebaseUser user;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+    TextInputEditText addpost_btn;
+    ImageView avatarIv;
     RecyclerView recyclerView;
     List<ModelPoost> poostList;
     AdapterPosts adapterPosts;
@@ -55,15 +63,50 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("Users");
+
         View view= inflater.inflate(R.layout.fragment_home, container, false);
 
         recyclerView= view.findViewById(R.id.postsRecyclerview);
+        addpost_btn = view.findViewById(R.id.addpost_btn);
+        avatarIv = view.findViewById(R.id.avatarIv);
         LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getActivity());
 
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
+        Query query = databaseReference.orderByChild("email").equalTo(user.getEmail());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //check until requiredd data get
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    //get data
+                    String image = "" + ds.child("image").getValue();
+                    try {
+                        // if image is received the get
+                        Picasso.get().load(image).into(avatarIv);
 
+                    } catch (Exception e) {
+                        // if there is any exception while getting image the get default
+                        Picasso.get().load(R.drawable.ic_default_img_white).into(avatarIv);
 
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        addpost_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AddPostActivity.class));
+            }
+        });
         recyclerView.setLayoutManager(linearLayoutManager);
         
         poostList = new ArrayList<>();
